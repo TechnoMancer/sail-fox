@@ -290,7 +290,7 @@ unit load_raw(fbits addr, const sail_string file) {
 sbits fast_read_ram_be(const int64_t data_size, const uint64_t address) {
   uint64_t r = 0;
   
-  for(uint64_t i = (uint64_t) data_size; i > 0; --i) {
+  for(int i = 0; i < data_size; i++) {
     uint64_t byte = read_mem(address + i);
     r = r << 8;
     r = r + byte;
