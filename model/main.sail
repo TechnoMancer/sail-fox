@@ -2,7 +2,7 @@ function fetch_and_execute() : unit -> unit =
   while halted == false do {
     print_bits("ia = ", instruction_address);
 
-    let instruction = read_ram(instruction_address, 2);
+    let instruction = read_u16_be(instruction_address);
 
     instruction_address_next = instruction_address + 2;
 

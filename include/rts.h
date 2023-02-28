@@ -8,11 +8,8 @@ unit sail_exit(unit);
 
 /* ***** Memory builtins ***** */
 
-void platform_read_mem_be(lbits *data,
-                          const int read_kind,
-                          const uint64_t addr_size,
-                          const sbits addr,
-                          const mpz_t n);
+fbits read_u8_be(fbits);
+fbits read_u16_be(fbits);
 
 int process_arguments(int, char**);
 

@@ -197,12 +197,5 @@ function hex_bits_16_backwards_matches s = match s {
   _ => false
 }
 
-
-type max_memory_access : Int = 2
-
-val __read_mem_be = monadic { c: "platform_read_mem_be" }
-  : forall 'n 'addrsize, 'n > 0 & 'addrsize in {32, 64}.
-  (read_kind, int('addrsize), bits('addrsize), int('n)) -> bits(8 * 'n)
-
-val read_ram = monadic { lem: "read_ram_be", coq: "read_ram_be" } : forall 'n, 0 < 'n <= max_memory_access . (bits(32), atom('n)) -> bits(8 * 'n)
-function read_ram(address, width) = __read_mem_be(Read_plain, 32, address, width)
+val read_u8_be = monadic { c: "read_u8_be" } : bits(32) -> bits(8)
+val read_u16_be = monadic { c: "read_u16_be" } : bits(32) -> bits(16)

@@ -37,24 +37,12 @@ fn main() {
     panic!("Sail: {} {} {}", sail.status, stdout, stderr);
   }
 
-  println!("cargo:rerun-if-changed=emulator/memory.c");
-  println!("cargo:rerun-if-changed=emulator/rts.c");
-
   cc::Build::new()
-    .include("emulator/include")
+    .include("include")
     .include(format!("{}/lib", sail_home))
     .include(env::var("DEP_GMP_INCLUDE_DIR").unwrap())
     .file(format!("{}/lib/sail.c", sail_home))
     .file(format!("{}/lib/sail_failure.c", sail_home))
-    .file("emulator/memory.c")
-    .file("emulator/rts.c")
-    .warnings(false) /* These a really spammy, should be fixed but … */
-    .compile("runtime");
-
-  cc::Build::new()
-    .include("emulator/include")
-    .include(format!("{}/lib", sail_home))
-    .include(env::var("DEP_GMP_INCLUDE_DIR").unwrap())
     .file(&format!("{}/foxmulator.c", out_dir))
     .warnings(false) /* These a really spammy, but it is what it is … */
     .compile("foxmulator");
