@@ -1,5 +1,4 @@
 use clap::Parser;
-use rug;
 use std::process::exit;
 
 mod memory;

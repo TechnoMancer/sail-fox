@@ -29,6 +29,8 @@ fn main() {
     "model/main.sail"
   ];
 
+  println!("cargo:rustc-link-lib=gmp");
+
   for file in &sail_src {
     println!("cargo:rerun-if-changed={}", file);
   }
