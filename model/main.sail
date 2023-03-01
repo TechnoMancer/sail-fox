@@ -8,11 +8,15 @@ function fetch_and_execute() : unit -> unit =
 
     print_bits("instruction = ", instruction);
 
-    let ast = code_word(instruction);
+    let (ast, (predicate, expected)) = code_word(instruction);
 
-    match execute(ast) {
-      RETIRE_SUCCESS => retire_instruction(),
-      RETIRE_FAIL => ()
+    if P(predicate) == bits_to_bool(expected) then {
+      match execute(ast) {
+        RETIRE_SUCCESS => retire_instruction(),
+        RETIRE_FAIL => ()
+      };
+    } else {
+      retire_instruction();
     };
 
     instruction_address = instruction_address_next;

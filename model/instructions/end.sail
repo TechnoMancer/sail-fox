@@ -4,7 +4,7 @@ function handle_unallocated() : unit -> unit = {
 
 union clause ast = UNALLOCATED : word
 
-mapping clause code_word = UNALLOCATED(s) <-> s
+mapping clause code_word = (UNALLOCATED(s), always) <-> s
 
 /* TODO: Actually handle this maybe? */
 function clause execute (UNALLOCATED(s)) = { handle_unallocated(); RETIRE_FAIL }

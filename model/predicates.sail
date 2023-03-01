@@ -73,3 +73,7 @@ overload P = {
 
 val predicate_name : predicate_index <-> string
 val predication : (predicate_index, bits(1)) <-> string
+
+type instruction_predicate = (predicate_index, predicate_type)
+
+let always : instruction_predicate = (0b1111, 0b1)
