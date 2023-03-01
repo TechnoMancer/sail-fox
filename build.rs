@@ -11,22 +11,26 @@ fn main() {
     .stdout;
   let sail_home = std::str::from_utf8(&sail_home).expect("Sail's output is not UTF-8?").trim_end(); 
 
-  println!("cargo:rerun-if-changed=model/prelude.sail");
-  println!("cargo:rerun-if-changed=model/types.sail");
-  println!("cargo:rerun-if-changed=model/registers.sail");
-  println!("cargo:rerun-if-changed=model/instructions/begin.sail");
-  println!("cargo:rerun-if-changed=model/instructions/branch.sail");
-  println!("cargo:rerun-if-changed=model/instructions/short_immediate.sail");
-  println!("cargo:rerun-if-changed=model/instructions/system.sail");
-  println!("cargo:rerun-if-changed=model/instructions/end.sail");
-  println!("cargo:rerun-if-changed=model/main.sail");
+  let sail_src = vec![
+    "model/prelude.sail",
+    "model/types.sail",
+    "model/registers.sail",
+    "model/instructions/begin.sail",
+    "model/instructions/branch.sail",
+    "model/instructions/short_immediate.sail",
+    "model/instructions/system.sail",
+    "model/instructions/end.sail",
+    "model/main.sail"
+  ];
+
+  for file in &sail_src {
+    println!("cargo:rerun-if-changed={}", file);
+  }
 
   let sail = Command::new("sail")
     .arg("-c")
     .args(["-o", &format!("{}/foxmulator", out_dir), "-c_no_main"])
-    .args(["model/prelude.sail", "model/types.sail", "model/registers.sail"])
-    .args(["model/instructions/begin.sail", "model/instructions/branch.sail", "model/instructions/short_immediate.sail", "model/instructions/system.sail", "model/instructions/end.sail"])
-    .args(["model/main.sail"])
+    .args(&sail_src)
     .output()
     .expect("Sail model failed to execute");
 

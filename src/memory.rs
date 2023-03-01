@@ -25,14 +25,6 @@ impl Memory {
     return self.map_page(address, MemoryPage::new());
   }
 
-  pub fn allocate_page_from_data(&mut self, address: usize, data: &[u8]) -> Result<(), ()> {
-    if address & L0_MASK != 0 {
-      return Err(());
-    }
-
-    return self.map_page(address, MemoryPage::from_data(data)?);
-  }
-
   pub fn allocate_page_from_file<P: AsRef<std::path::Path>>(&mut self, address: usize, path: P) -> Result<(), ()> {
     if address & L0_MASK != 0 {
       return Err(());
@@ -74,7 +66,7 @@ impl Memory {
   }
 }
 
-pub struct MemoryPage(usize);
+struct MemoryPage(usize);
 
 impl MemoryPage {
   pub fn new() -> MemoryPage {
