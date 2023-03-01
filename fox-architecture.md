@@ -88,12 +88,12 @@ address modes
 | reserved            | 0011 1111 0111 dddd |                         |        |
 | reserved            | 0011 1111 1000 dddd |                         |        |
 | reserved            | 0011 1111 1001 dddd |                         |        |
-| neq rd, 0           | 0011 1111 1010 dddd |                         |        |
-| eq rd, 0            | 0011 1111 1011 dddd |                         |        |
-| neq rd, 0 unless p0 | 0011 1111 1100 dddd |                         |        |
-| eq rd, 0 unless p0  | 0011 1111 1101 dddd |                         |        |
-| neq rd, 0 if p0     | 0011 1111 1110 dddd |                         |        |
-| eq rd, 0 if p0      | 0011 1111 1111 dddd |                         |        |
+| eq rd, 0            | 0011 1111 1010 dddd |                         |        |
+| neq rd, 0           | 0011 1111 1011 dddd |                         |        |
+| eq rd, 0 unless p0  | 0011 1111 1100 dddd |                         |        |
+| neq rd, 0 unless p0 | 0011 1111 1101 dddd |                         |        |
+| eq rd, 0 if p0      | 0011 1111 1110 dddd |                         |        |
+| neq rd, 0 if p0     | 0011 1111 1111 dddd |                         |        |
 
 (call cd)
 

@@ -31,6 +31,12 @@ function bool_to_bits b = match b {
   false => 0b0
 }
 
+function xor_bool(a: bool, b: bool) -> bool = {
+  a != b
+}
+
+overload operator ^ = { xor_bool }
+
 infix 7 >>
 infix 7 <<
 
