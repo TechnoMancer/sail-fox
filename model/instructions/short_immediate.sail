@@ -1,5 +1,4 @@
 /* TODO: This is clearly missing an implementation */
-val register_name : register_index <-> string
 val short_sext_immediate : bits(4) <-> string
 val short_signed_immediate : bits(4) <-> string
 val short_unsigned_immediate : bits(4) <-> string

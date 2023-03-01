@@ -78,10 +78,10 @@ address modes
 
 | SR   | ffff ffff ffff dddd                     |
 
-| blr cd              | 0011 1111 0000 dddd |                         |        |
-| b cd                | 0011 1111 0001 dddd |                         |        |
-| b cd unless p0      | 0011 1111 0010 dddd |                         |        |
-| b cd if p0          | 0011 1111 0011 dddd |                         |        |
+| blr cd              | 0011 1111 0000 dddd |                         | ?????? |
+| b cd                | 0011 1111 0001 dddd |                         | ?????? |
+| b cd unless p0      | 0011 1111 0010 dddd |                         | ?????? |
+| b cd if p0          | 0011 1111 0011 dddd |                         | ?????? |
 | reserved            | 0011 1111 0100 dddd |                         |        |
 | reserved            | 0011 1111 0101 dddd |                         |        |
 | reserved            | 0011 1111 0110 dddd |                         |        |

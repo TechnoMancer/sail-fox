@@ -14,9 +14,11 @@ fn main() {
   let sail_src = vec![
     "model/prelude.sail",
     "model/types.sail",
+    "model/predicates.sail",
     "model/registers.sail",
     "model/instructions/begin.sail",
     "model/instructions/branch.sail",
+    "model/instructions/comparison.sail",
     "model/instructions/short_immediate.sail",
     "model/instructions/system.sail",
     "model/instructions/end.sail",

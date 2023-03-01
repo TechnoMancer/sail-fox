@@ -13,6 +13,24 @@ function bit_to_bool b = match b {
   bitzero => false
 }
 
+val bits_to_bool : bits(1) -> bool
+function bits_to_bool b = match b {
+  0b1 => true,
+  0b0 => false
+}
+
+val bool_to_bit : bool -> bit
+function bool_to_bit b = match b {
+  true  => bitone,
+  false => bitzero
+}
+
+val bool_to_bits : bool -> bits(1)
+function bool_to_bits b = match b {
+  true  => 0b1,
+  false => 0b0
+}
+
 infix 7 >>
 infix 7 <<
 
