@@ -31,66 +31,11 @@ function bool_to_bits b = match b {
   false => 0b0
 }
 
-function xor_bool(a: bool, b: bool) -> bool = {
-  a != b
-}
-
-overload operator ^ = { xor_bool }
-
-infix 7 >>
-infix 7 <<
-
-val "shift_bits_right" : forall 'n 'm. (bits('n), bits('m)) -> bits('n)
-val "shift_bits_left"  : forall 'n 'm. (bits('n), bits('m)) -> bits('n)
-
-val "shiftl" : forall 'm 'n, 'n >= 0. (bits('m), atom('n)) -> bits('m)
-val "shiftr" : forall 'm 'n, 'n >= 0. (bits('m), atom('n)) -> bits('m)
-
-overload operator >> = { shift_bits_right, shiftr }
-overload operator << = { shift_bits_left, shiftl }
-
-val sub_vec = pure { c: "sub_bits", _: "sub_vec" } : forall 'n. (bits('n), bits('n)) -> bits('n)
-
-val sub_vec_int = pure { c: "sub_bits_int", _: "sub_vec_int" } : forall 'n. (bits('n), int) -> bits('n)
-
-overload operator - = {sub_vec, sub_vec_int}
-
 val sign_extend : forall 'n 'm, 'm >= 'n. (implicit('m), bits('n)) -> bits('m)
 val zero_extend : forall 'n 'm, 'm >= 'n. (implicit('m), bits('n)) -> bits('m)
 
 function sign_extend(m, v) = sail_sign_extend(v, m)
 function zero_extend(m, v) = sail_zero_extend(v, m)
-
-val branch_extend : forall 'n 'm, 'm > 'n & 'n > 0. (implicit('m), bits('n)) -> bits('m)
-val signed_extend : forall 'n 'm, 'm > 'n & 'n > 0. (implicit('m), bits('n)) -> bits('m)
-val unsigned_extend : forall 'n 'm, 'm > 'n & 'n > 0. (implicit('m), bits('n)) -> bits('m)
-
-function branch_extend(m, v) = {
-  let sign = v[0 .. 0];
-
-  let value : bits('n) = match sign {
-    0b0 => v + 1,
-    0b1 => v - 2
-  };
-
-  (sign_extend('m - 'n, sign) @ value) << 1
-}
-
-function signed_extend(m, v) = {
-  let sign = v[0 .. 0];
-
-  let value : bits('n) = match sign {
-    0b0 => v + 1,
-    0b1 => v - 1
-  };
-
-  sign_extend('m - 'n, sign) @ value
-}
-
-function unsigned_extend(m, v) = {
-  zero_extend(m, v) + 1
-}
-
 
 val string_startswith = pure "string_startswith" : (string, string) -> bool
 val string_drop = pure "string_drop" : (string, nat) -> string
