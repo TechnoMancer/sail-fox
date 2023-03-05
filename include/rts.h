@@ -6,10 +6,22 @@
 
 unit sail_exit(unit);
 
-/* ***** Memory builtins ***** */
+/* Memory builtins */
 
 fbits read_u8_be(fbits);
 fbits read_u16_be(fbits);
+
+/* State builtins */
+
+fbits read_ia();
+fbits read_register(fbits);
+fbits read_predicate(fbits);
+
+unit write_ia(fbits);
+unit write_register(fbits, fbits);
+unit write_predicate(fbits, bool);
+
+/* Random stuff */
 
 int process_arguments(int, char**);
 

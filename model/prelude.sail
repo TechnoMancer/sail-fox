@@ -7,6 +7,10 @@ $include <string.sail>
 $include <vector_dec.sail>
 $include <regfp.sail>
 
+val dec_str = pure "dec_str" : int -> string
+val hex_str = pure "hex_str" : int -> string
+val print = pure "print_endline" : string -> unit
+
 val bit_to_bool : bit -> bool
 function bit_to_bool b = match b {
   bitone  => true,
@@ -165,6 +169,25 @@ function hex_bits_16_backwards_matches s = match s {
   } => true,
   _ => false
 }
+
+val hex_bits_32 : bits(32) <-> string
+val hex_bits_32_forwards = pure "decimal_string_of_bits" : bits(32) -> string
+val hex_bits_32_forwards_matches : bits(32) -> bool
+function hex_bits_32_forwards_matches bv = true
+val "hex_bits_32_matches_prefix" : string -> option((bits(32), nat))
+val hex_bits_32_backwards_matches : string -> bool
+function hex_bits_32_backwards_matches s = match s {
+  s if match hex_bits_32_matches_prefix(s) {
+    Some (_, n) if n == string_length(s) => true,
+    _ => false
+  } => true,
+  _ => false
+}
+val hex_bits_32_backwards : string -> bits(32)
+function hex_bits_32_backwards s =
+  match hex_bits_32_matches_prefix(s) {
+      Some (bv, n) if n == string_length(s) => bv
+  }
 
 val read_u8_be = monadic { c: "read_u8_be" } : bits(32) -> bits(8)
 val read_u16_be = monadic { c: "read_u16_be" } : bits(32) -> bits(16)

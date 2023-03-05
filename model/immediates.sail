@@ -27,3 +27,12 @@ function signed_extend(m, v) = {
 function unsigned_extend(m, v) = {
   zero_extend(m, v) + 1
 }
+
+val short_value_immediate : bits(4) <-> string
+function short_value_immediate_forwards(value: bits(4)) -> string = dec_str(signed(value))
+val short_value_immediate_backwards : string -> bits(4)
+function short_value_immediate_forwards_matches(value: bits(4)) -> bool = true
+val short_value_immediate_backwards_matches : string -> bool
+
+val short_signed_immediate : bits(4) <-> string
+val short_unsigned_immediate : bits(4) <-> string

@@ -1,3 +1,5 @@
+use crate::assembler;
+
 const PAGE_SHIFT: usize = 14;
 const PAGE_SIZE: usize = 16 * 1024;
 
@@ -31,6 +33,17 @@ impl Memory {
     }
 
     return self.map_page(address, MemoryPage::from_file(path)?);
+  }
+
+  pub fn allocate_page_from_assembly(&mut self, address: usize, asm: &str) -> Result<(), ()> {
+    if address & L0_MASK != 0 {
+      return Err(());
+    }
+
+    let binary = assembler::assemble(asm)?;
+
+    return self.map_page(address, MemoryPage::from_data(&binary)?);
+
   }
 
   fn map_page(&mut self, address: usize, page: MemoryPage) -> Result<(), ()> {
@@ -198,3 +211,5 @@ impl MemoryMap {
     };
   }
 }
+
+pub mod sail_interop;

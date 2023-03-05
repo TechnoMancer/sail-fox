@@ -14,10 +14,5 @@ mapping clause assembly = UNALLOCATED(s) <-> "unallocated" ^ spc() ^ hex_bits_16
 /* End definitions */
 end ast
 end execute
-end assembly
 end code_word
-
-val print_insn : ast -> string
-function print_insn insn = assembly(insn)
-
-overload to_str = { print_insn }
+end assembly

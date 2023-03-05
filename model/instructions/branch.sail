@@ -14,4 +14,4 @@ function clause execute BRANCH_S(imm) = {
   RETIRE_SUCCESS
 }
 
-mapping clause assembly = BRANCH_S(imm) <-> "b" ^ spc() ^ short_branch_immediate(imm)
+mapping clause assembly = BRANCH_S(imm) <-> "b" ^ spc() ^ hex_bits_8(imm) /* ^ short_branch_immediate(imm) */

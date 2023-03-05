@@ -25,40 +25,32 @@ function clause execute MOVP(pd, pa) = {
 mapping clause assembly = MOVP(pd, pa) <->  "mov" ^ spc() ^ predicate_name(pd) ^ sep() ^ predicate_name(pa)
 
 /* add rd, ra */
-union clause ast = ADD : (register_index, register_index)
+union clause ast = ADD : (register_index, register_index, register_index)
 
-mapping clause code_word = (ADD(rd, ra), always) <-> 0b0010_0100 @ ra @ rd
+mapping clause code_word = forwards (ADD(rd, ra, rb), always) if ra == rd => 0b0010_0100 @ rb @ rd
+mapping clause code_word = backwards 0b0010_0100 @ ra : register_index @ rd : register_index => (ADD(rd, rd, ra), always)
 
-function clause execute ADD(rd, ra) = {
-  R(rd) = R(rd) + R(ra);
-
-  RETIRE_SUCCESS
-}
-
-mapping clause assembly = ADD(rd, ra) <->  "add" ^ spc() ^ register_name(rd) ^ sep() ^ register_name(ra)
-
-/* sub rd, ra */
-union clause ast = SUB : (register_index, register_index)
-
-mapping clause code_word = (SUB(rd, ra), always) <-> 0b0010_0101 @ ra @ rd
-
-function clause execute SUB(rd, ra) = {
-  R(rd) = R(rd) - R(ra);
+function clause execute ADD(rd, ra, rb) = {
+  R(rd) = R(ra) + R(rb);
 
   RETIRE_SUCCESS
 }
 
-mapping clause assembly = SUB(rd, ra) <->  "sub" ^ spc() ^ register_name(rd) ^ sep() ^ register_name(ra)
+mapping clause assembly = ADD(rd, ra, rb) <->  "add" ^ spc() ^ register_name(rd) ^ sep() ^ register_name(ra) ^ sep() ^ register_name(rb)
 
-/* subf rd, ra */
-union clause ast = SUBF : (register_index, register_index)
+/* suba */
+union clause ast = SUB : (register_index, register_index, register_index)
 
-mapping clause code_word = (SUBF(rd, ra), always) <-> 0b0010_0110 @ ra @ rd
+mapping clause code_word = forwards (SUB(rd, ra, rb), always) if ra == rd => 0b0010_0101 @ rb @ rd
+mapping clause code_word = forwards (SUB(rd, ra, rb), always) if rb == rd => 0b0010_0110 @ ra @ rd
 
-function clause execute SUBF(rd, ra) = {
-  R(rd) = R(ra) - R(rd);
+mapping clause code_word = backwards 0b0010_0101 @ ra : register_index @ rd : register_index => (SUB(rd, rd, ra), always)
+mapping clause code_word = backwards 0b0010_0110 @ ra : register_index @ rd : register_index => (SUB(rd, ra, rd), always)
+
+function clause execute SUB(rd, ra, rb) = {
+  R(rd) = R(ra) - R(rb);
 
   RETIRE_SUCCESS
 }
 
-mapping clause assembly = SUBF(rd, ra) <->  "subf" ^ spc() ^ register_name(rd) ^ sep() ^ register_name(ra)
+mapping clause assembly = SUB(rd, ra, rb) <->  "sub" ^ spc() ^ register_name(rd) ^ sep() ^ register_name(ra) ^ sep() ^ register_name(rb)

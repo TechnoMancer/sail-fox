@@ -1,8 +1,11 @@
-use clap::Parser;
+extern crate foxmulator;
+
 use std::process::exit;
 
-mod memory;
-mod runtime;
+use clap::Parser;
+use parse_int::parse;
+
+use foxmulator::Foxmulator;
 
 #[derive(Parser)]
 struct Arguments {
@@ -17,23 +20,26 @@ struct Arguments {
 fn main() {
   let args = Arguments::parse();
 
-  runtime::init();
+  let mut foxmulator = Foxmulator::singleton().unwrap();
 
   if let Some(ref binary) = args.binary {
-    if runtime::map_binary(binary).is_none() {
+    let (address, path) = binary.split_once(",").unwrap();
+    let address = parse::<usize>(address).unwrap();
+
+    if foxmulator.map_binary(address, path).is_err() {
       println!("Failed to map binary: {}", binary);
       exit(1);
     };
   }
 
   if let Some(ref memory) = args.memory {
-    if runtime::map_memory(memory).is_none() {
+    let address = parse::<usize>(memory).unwrap();
+
+    if foxmulator.map_memory(address).is_err() {
       println!("Failed to map memory: {}", memory);
       exit(1);
     };
   }
 
-  runtime::run_model();
-  runtime::fini();
-  runtime::pre_exit();
+  foxmulator.run();
 }

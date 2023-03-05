@@ -16,8 +16,10 @@ fn main() {
     "model/operators.sail",
     "model/immediates.sail",
     "model/types.sail",
-    "model/predicates.sail",
-    "model/registers.sail",
+    "model/registers/predicates.sail",
+    "model/registers/registers.sail",
+    "model/registers/system.sail",
+    "model/state.sail",
     "model/instructions/begin.sail",
     "model/instructions/alu.sail",
     "model/instructions/branch.sail",
@@ -57,5 +59,8 @@ fn main() {
     .file(format!("{}/lib/sail_failure.c", sail_home))
     .file(&format!("{}/foxmulator.c", out_dir))
     .warnings(false) /* These a really spammy, but it is what it is … */
-    .compile("foxmulator");
+    .compile("foxmulator-model");
+
+    println!("cargo:rustc-link-lib=foxmulator-model");
+
 }
