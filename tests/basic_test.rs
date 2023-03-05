@@ -1,11 +1,13 @@
-use foxmulator::{Foxmulator, State};
+use foxmulator::Foxmulator;
 
 #[test]
 fn test_nop() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
   
-  foxmulator.map_assembly(0, "nop\nhalt").unwrap();
-  foxmulator.run();
+  foxmulator.run_assembly(r#"
+    nop
+    halt
+  "#);
 
   assert_eq!(0, 0);
 }
@@ -14,16 +16,26 @@ fn test_nop() {
 fn test_add() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 
-  let mut state = State::new();
+  foxmulator.state.r[0] = 2;
+  foxmulator.state.r[1] = 1;
+  foxmulator.run_assembly(r#"
+    add r0, r1
+    halt
+  "#);
 
-  state.r[0] = 2;
-  state.r[1] = 1;
+  assert_eq!(foxmulator.state.r[0], 3);
+}
 
-  foxmulator.set_state(state);
-  println!("before: {:?}", foxmulator.state());
-  foxmulator.map_assembly(0, "add r0, r1\nhalt").unwrap();
-  foxmulator.run();
-  println!("after: {:?}", foxmulator.state());
+#[test]
+fn test_sub() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
 
-  assert_eq!(foxmulator.state().r[0], 3);
+  foxmulator.state.r[0] = 3;
+  foxmulator.state.r[1] = 1;
+  foxmulator.run_assembly(r#"
+    sub r0, r1
+    halt
+  "#);
+
+  assert_eq!(foxmulator.state.r[0], 2);
 }

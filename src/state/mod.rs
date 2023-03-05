@@ -15,4 +15,11 @@ impl State {
   }
 }
 
+impl Default for State {
+  fn default() -> Self {
+    return State::new();
+  }
+}
+
+
 pub mod sail_interop;

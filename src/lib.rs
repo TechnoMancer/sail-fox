@@ -10,11 +10,12 @@ mod state;
 pub use state::State;
 
 pub struct Foxmulator {
+  pub state: State,
   _hidden: usize
 }
 
 static mut MUTEX: Mutex<()> = Mutex::new(());
-static mut FOXMULATOR: Option<Foxmulator> = Some(Foxmulator { _hidden: 0 });
+static mut FOXMULATOR: Option<Foxmulator> = Some(Foxmulator { state: State::new(), _hidden: 0 });
 
 extern {
   fn model_init();
@@ -43,7 +44,16 @@ impl Foxmulator {
   }
 
   pub fn run(&mut self) {
-    unsafe { zmain(0) };
+    unsafe {
+      state::sail_interop::STATE = self.state;
+      zmain(0);
+      self.state = state::sail_interop::STATE;
+    }
+  }
+
+  pub fn run_assembly(&mut self, asm: &str) {
+    self.map_assembly(0, asm).unwrap();
+    self.run();
   }
 
   pub fn map_memory(&mut self, address: usize) -> Result<(), ()> {  
@@ -74,7 +84,7 @@ impl Drop for Foxmulator {
 
       let _guard = MUTEX.lock().unwrap();
 
-      FOXMULATOR = Some(Foxmulator { _hidden: 0 });
+      FOXMULATOR = Some(Foxmulator { state: State::new(), _hidden: 0 });
     }
   }
 }
