@@ -16,17 +16,17 @@ address modes
 | ---- | --------------------------------------- |
 | SSYS | ffff ffff ffff ffff                     |
 
-| unallocated     | 0000 0000 0000 0000 |                             |        |
-| halt            | 0000 0000 0000 0001 |                             |        |
-| reserved        | 0000 0000 0000 xxxx |                             |        |
-| nop             | 0000 0000 0001 0000 |                             |        |
-| hint            | 0000 0000 0001 xxxx |                             |        |
+| unallocated     | 0000 0000 0000 0000 |                             | FOX-1  |
+| halt            | 0000 0000 0000 0001 |                             | FOX-1  |
+| reserved        | 0000 0000 0000 xxxx |                             | FOX-1  |
+| nop             | 0000 0000 0001 0000 |                             | FOX-1  |
+| hint            | 0000 0000 0001 xxxx |                             | FOX-1  |
 
 | SI8  | ffff ffff iiii iiii                     | (10 bits?)
 
-| b imm           | 0000 0001 iiii iiii |                             |        |
-| b imm unless p0 | 0000 0010 iiii iiii |                             |        |
-| b imm if p0     | 0000 0011 iiii iiii |                             |        |
+| b imm           | 0000 0001 iiii iiii |                             | FOX-1  |
+| b imm unless p0 | 0000 0010 iiii iiii |                             | FOX-1  |
+| b imm if p0     | 0000 0011 iiii iiii |                             | FOX-1  |
 
 (adjust-sp imm)
 
@@ -38,31 +38,37 @@ address modes
 | reserved        | 0001 0011 iiii dddd |                             |        |
 
 | set.b rd, imm   | 0001 0100 iiii dddd |                             |        |
-| set.w rd, imm   | 0001 0101 iiii dddd |                             |        |
+| set.w rd, imm   | 0001 0101 iiii dddd |                             | FOX-1  |
 | set.d rd, imm   | 0001 0110 iiii dddd |                             |        |
 | set.q rd, imm   | 0001 0111 iiii dddd |                             |        |
 
-(shift-left rd, imm)
-(shift-right rd, imm)
-(shift-right-arithmetic rd, imm)
+| reserved        | 0001 1000 iiii dddd |                             |        |
+| sll rd, imm     | 0001 1001 iiii dddd |                             | FOX-1  |
+| sra rd, imm     | 0001 1010 iiii dddd |                             | FOX-1  |
+| srl rd, imm     | 0001 1011 iiii dddd |                             | FOX-1  |
+
+| reserved        | 0001 1100 iiii dddd |                             |        |
+| reserved        | 0001 1101 iiii dddd |                             |        |
+| reserved        | 0001 1110 iiii dddd |                             |        |
+| reserved        | 0001 1111 iiii dddd |                             |        |
 
 (bit-set rd, imm)
 (bit-test rd, imm)
 
 | SRR  | ffff ffff aaaa dddd                     | (12 bits?)
 
-| mov rd, ra          | 0010 0000 aaaa dddd |                         |        |
+| mov rd, ra          | 0010 0000 aaaa dddd |                         | FOX-1  |
 | mov cd, ca          | 0010 0001 aaaa dddd |                         |        |
 | mov pd, pa          | 0010 0010 aaaa dddd |                         |        |
 | reserved            | 0010 0011 aaaa dddd |                         |        |
-| add rd, ra          | 0010 0100 aaaa dddd |                         |        |
-| sub rd, ra          | 0010 0101 aaaa dddd |                         |        |
+| add rd, ra          | 0010 0100 aaaa dddd |                         | FOX-1  |
+| sub rd, ra          | 0010 0101 aaaa dddd |                         | FOX-1  |
 | subf rd, ra         | 0010 0110 aaaa dddd |                         |        |
 | mul rd, ra          | 0010 0111 aaaa dddd |                         |        |
-| and rd, ra          | 0010 1000 aaaa dddd |                         |        |
+| and rd, ra          | 0010 1000 aaaa dddd |                         | FOX-1  |
 | andc rd, ra         | 0010 1001 aaaa dddd |                         |        |
-| or rd, ra           | 0010 1010 aaaa dddd |                         |        |
-| xor rd, ra          | 0010 1011 aaaa dddd |                         |        |
+| or rd, ra           | 0010 1010 aaaa dddd |                         | FOX-1  |
+| xor rd, ra          | 0010 1011 aaaa dddd |                         | FOX-1  |
 | lt rd, ra           | 0010 1100 aaaa dddd |                         |        |
 | lte rd, ra          | 0010 1101 aaaa dddd |                         |        |
 | lt.u rd, ra         | 0010 1110 aaaa dddd |                         |        |
@@ -71,29 +77,56 @@ address modes
 | neq rd, ra          | 0011 0001 aaaa dddd |                         |        |
 | reserved            | 0011 0010 aaaa dddd |                         |        |
 | reserved            | 0011 0011 aaaa dddd |                         |        |
-| sl rd, ra           | 0011 0100 aaaa dddd |                         |        |
-| sr rd, ra           | 0011 0101 aaaa dddd |                         |        |
-| sra rd, ra          | 0011 0110 aaaa dddd |                         |        |
-| reserved            | 0011 0111 aaaa dddd |                         |        |
+| reserved            | 0011 0100 aaaa dddd |                         |        |
+| add.c rd, ra, p1    | 0011 0101 aaaa dddd |                         |        |
+| sub.c rd, ra, p1    | 0011 0110 aaaa dddd |                         |        |
 
 | SR   | ffff ffff ffff dddd                     |
 
-| blr cd              | 0011 1111 0000 dddd |                         | ?????? |
-| b cd                | 0011 1111 0001 dddd |                         | ?????? |
-| b cd unless p0      | 0011 1111 0010 dddd |                         | ?????? |
-| b cd if p0          | 0011 1111 0011 dddd |                         | ?????? |
-| reserved            | 0011 1111 0100 dddd |                         |        |
-| reserved            | 0011 1111 0101 dddd |                         |        |
-| reserved            | 0011 1111 0110 dddd |                         |        |
-| reserved            | 0011 1111 0111 dddd |                         |        |
+<<<<<<< Local Changes
+| blr rd              | 0011 1111 0000 dddd |                         |        |
+| b rd                | 0011 1111 0001 dddd |                         | ?????? |
+| b rd unless p0      | 0011 1111 0010 dddd |                         | ?????? |
+| b rd if p0          | 0011 1111 0011 dddd |                         | ?????? |
+| blr cd              | 0011 1111 0100 dddd |                         | ?????? |
+| b cd                | 0011 1111 0101 dddd |                         | ?????? |
+| b cd unless p0      | 0011 1111 0110 dddd |                         | ?????? |
+| b cd if p0          | 0011 1111 0111 dddd |                         | ?????? |
+=======
+| eq rd, 0            | 0011 1110 0000 dddd |                         | FOX-1  |
+| neq rd, 0           | 0011 1110 0001 dddd |                         | FOX-1  |
+| eq rd, 0 unless p0  | 0011 1110 0010 dddd |                         |        |
+| neq rd, 0 unless p0 | 0011 1110 0011 dddd |                         |        |
+| eq rd, 0 if p0      | 0011 1110 0100 dddd |                         |        |
+| neq rd, 0 if p0     | 0011 1110 0101 dddd |                         |        |
+| lt rd, 0            | 0011 1110 0110 dddd |                         | FOX-1  |
+| gt rd, 0            | 0011 1110 0111 dddd |                         | FOX-1  |
+| lt rd, 0 unless p0  | 0011 1110 1000 dddd |                         |        |
+| gt rd, 0 unless p0  | 0011 1110 1001 dddd |                         |        |
+| lt rd, 0 if p0      | 0011 1110 1010 dddd |                         |        |
+| gt rd, 0 if p0      | 0011 1110 1011 dddd |                         |        |
+| reserved            | 0011 1110 1100 dddd |                         |        |
+| reserved            | 0011 1110 1101 dddd |                         |        |
+| set.p pd, 0         | 0011 1110 1110 dddd |                         | FOX-1  |
+| set.p pd, 1         | 0011 1110 1111 dddd |                         | FOX-1  |
+
+| blr cd              | 0011 1111 0000 dddd |                         |        |
+| b cd                | 0011 1111 0001 dddd |                         |        |
+| b cd unless p0      | 0011 1111 0010 dddd |                         |        |
+| b cd if p0          | 0011 1111 0011 dddd |                         |        |
+| blr rd              | 0011 1111 0100 dddd |                         | FOX-1  |
+| b rd                | 0011 1111 0101 dddd |                         | FOX-1  |
+| b rd unless p0      | 0011 1111 0110 dddd |                         | FOX-1  |
+| b rd if p0          | 0011 1111 0111 dddd |                         | FOX-1  |
+>>>>>>> External Changes
 | reserved            | 0011 1111 1000 dddd |                         |        |
 | reserved            | 0011 1111 1001 dddd |                         |        |
-| eq rd, 0            | 0011 1111 1010 dddd |                         |        |
-| neq rd, 0           | 0011 1111 1011 dddd |                         |        |
-| eq rd, 0 unless p0  | 0011 1111 1100 dddd |                         |        |
-| neq rd, 0 unless p0 | 0011 1111 1101 dddd |                         |        |
-| eq rd, 0 if p0      | 0011 1111 1110 dddd |                         |        |
-| neq rd, 0 if p0     | 0011 1111 1111 dddd |                         |        |
+| reserved            | 0011 1111 1010 dddd |                         |        |
+| reserved            | 0011 1111 1011 dddd |                         |        |
+| reserved            | 0011 1111 1100 dddd |                         |        |
+| reserved            | 0011 1111 1101 dddd |                         |        |
+| reserved            | 0011 1111 1110 dddd |                         |        |
+| reserved            | 0011 1111 1111 dddd |                         |        |
 
 (call cd)
 
@@ -121,8 +154,8 @@ address modes
 | Name            | Encoding            | Description                 | Model  |
 | --------------- | ------------------- |:--------------------------- | :----- |
 | ld.b rd, cb[ra] | 0100 0bbb aaaa dddd |                             |        |
-| st cb[ra], rd   | 0100 1bbb aaaa dddd |                             |        |
-| ld.w rd, cb[ra] | 0101 0bbb aaaa dddd |                             |        |
+| st cb[ra], rd   | 0100 1bbb aaaa dddd |                             | FOX-1  |
+| ld.w rd, cb[ra] | 0101 0bbb aaaa dddd |                             | FOX-1  |
 | ld.b rd, sp[i]  | 0101 10ii iiii dddd |                             |        |
 | ld.w rd, sp[i]  | 0101 11ii iiii dddd |                             |        |
 | ld.d rd, cb[ra] | 0110 0bbb aaaa dddd |                             |        |

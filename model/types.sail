@@ -1,4 +1,6 @@
 type word = bits(16)
+type doubleword = bits(32)
+type quadword = bits(64)
 
 type register_index = bits(4)
 type register_number ('n : Int), 0 <= 'n < 16 = atom('n)

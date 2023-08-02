@@ -20,14 +20,12 @@ fn main() {
     "model/registers/registers.sail",
     "model/registers/system.sail",
     "model/state.sail",
-    "model/instructions/begin.sail",
-    "model/instructions/alu.sail",
-    "model/instructions/branch.sail",
-    "model/instructions/comparison.sail",
-    "model/instructions/logical.sail",
-    "model/instructions/short_immediate.sail",
-    "model/instructions/system.sail",
-    "model/instructions/end.sail",
+    "model/instructions/ast.sail",
+    "model/instructions/encoding_word.sail",
+    "model/instructions/block.sail",
+    "model/instructions/execute.sail",
+    "model/instructions/assembly.sail",
+    "model/fetch.sail",
     "model/main.sail"
   ];
 

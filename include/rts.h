@@ -13,7 +13,7 @@ fbits read_u16_be(fbits);
 
 /* State builtins */
 
-fbits read_ia();
+fbits read_ia(unit);
 fbits read_register(fbits);
 fbits read_predicate(fbits);
 

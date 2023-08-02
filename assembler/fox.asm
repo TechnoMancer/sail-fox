@@ -90,15 +90,24 @@
   cf => 0x7`3
 }
 
+#subruledef short_block_length {
+  {words: u16} => {
+    assert(words >= 0)
+    assert(words <= 0x1F)
+
+    words`5
+  }
+}
+
 #subruledef short_relative_address {
 	{address: u16} => {
     assert(address % 2 == 0)
 
-		relative = address - $ - 2
-    result = (relative > 0 ? relative - 2 : relative + 4) >> 1
+		relative = address - $
+    result = relative >> 1
 
-		assert(result <=  0x7F)
 		assert(result >= -0x80)
+		assert(result <=  0x7F)
 
 		result`8
 	}
@@ -112,6 +121,15 @@
   b {imm: short_relative_address} => 0x01 @ imm;
   b {imm: short_relative_address} unless p0 => 0x02 @ imm;
   b {imm: short_relative_address} if p0 => 0x03 @ imm;
+
+  block {imm: short_block_length} => 0x04 @ 0x0`1 @ 0x0`2 @ imm
+  block.s {imm: short_block_length} => 0x04 @ 0x01`1 @ 0x0`2 @ imm
+
+  ; add l0 looping flags
+
+  bl {imm: short_relative_address} => 0x05 @ imm
+  bl {imm: short_relative_address} unless p0 => 0x06 @ imm
+  bl {imm: short_relative_address} if p0 => 0x07 @ imm
 
   add {rd: register}, {imm: u4} => 0x10 @ imm @ rd
   sub {rd: register}, {imm: u4} => 0x11 @ imm @ rd

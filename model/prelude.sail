@@ -118,6 +118,25 @@ function hex_bits_4_backwards s =
       Some (bv, n) if n == string_length(s) => bv
   }
 
+val hex_bits_5 : bits(5) <-> string
+val hex_bits_5_forwards = pure "decimal_string_of_bits" : bits(5) -> string
+val hex_bits_5_forwards_matches : bits(5) -> bool
+function hex_bits_5_forwards_matches bv = true
+val "hex_bits_5_matches_prefix" : string -> option((bits(5), nat))
+val hex_bits_5_backwards_matches : string -> bool
+function hex_bits_5_backwards_matches s = match s {
+  s if match hex_bits_5_matches_prefix(s) {
+    Some (_, n) if n == string_length(s) => true,
+    _ => false
+  } => true,
+  _ => false
+}
+val hex_bits_5_backwards : string -> bits(5)
+function hex_bits_5_backwards s =
+  match hex_bits_5_matches_prefix(s) {
+      Some (bv, n) if n == string_length(s) => bv
+  }
+
 val hex_bits_7 : bits(7) <-> string
 val hex_bits_7_forwards = pure "decimal_string_of_bits" : bits(7) -> string
 val hex_bits_7_forwards_matches : bits(7) -> bool
