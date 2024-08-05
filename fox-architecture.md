@@ -83,16 +83,6 @@ address modes
 
 | SR   | ffff ffff ffff dddd                     |
 
-<<<<<<< Local Changes
-| blr rd              | 0011 1111 0000 dddd |                         |        |
-| b rd                | 0011 1111 0001 dddd |                         | ?????? |
-| b rd unless p0      | 0011 1111 0010 dddd |                         | ?????? |
-| b rd if p0          | 0011 1111 0011 dddd |                         | ?????? |
-| blr cd              | 0011 1111 0100 dddd |                         | ?????? |
-| b cd                | 0011 1111 0101 dddd |                         | ?????? |
-| b cd unless p0      | 0011 1111 0110 dddd |                         | ?????? |
-| b cd if p0          | 0011 1111 0111 dddd |                         | ?????? |
-=======
 | eq rd, 0            | 0011 1110 0000 dddd |                         | FOX-1  |
 | neq rd, 0           | 0011 1110 0001 dddd |                         | FOX-1  |
 | eq rd, 0 unless p0  | 0011 1110 0010 dddd |                         |        |
@@ -118,7 +108,6 @@ address modes
 | b rd                | 0011 1111 0101 dddd |                         | FOX-1  |
 | b rd unless p0      | 0011 1111 0110 dddd |                         | FOX-1  |
 | b rd if p0          | 0011 1111 0111 dddd |                         | FOX-1  |
->>>>>>> External Changes
 | reserved            | 0011 1111 1000 dddd |                         |        |
 | reserved            | 0011 1111 1001 dddd |                         |        |
 | reserved            | 0011 1111 1010 dddd |                         |        |
