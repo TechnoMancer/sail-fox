@@ -165,10 +165,10 @@
   eq {rd: register}, 0 if p0 => 0x3F @ 0xE @ rd
   neq {rd: register}, 0 if p0 => 0x3F @ 0xF @ rd
 
-| eq rd, 0 unless p0  | 0011 1111 1100 dddd |                         |        |
-| neq rd, 0 unless p0 | 0011 1111 1101 dddd |                         |        |
-| eq rd, 0 if p0      | 0011 1111 1110 dddd |                         |        |
-| neq rd, 0 if p0     | 0011 1111 1111 dddd |                         |        |
+;| eq rd, 0 unless p0  | 0011 1111 1100 dddd |                         |        |
+;| neq rd, 0 unless p0 | 0011 1111 1101 dddd |                         |        |
+;| eq rd, 0 if p0      | 0011 1111 1110 dddd |                         |        |
+;| neq rd, 0 if p0     | 0011 1111 1111 dddd |                         |        |
 
   st {cb: short_capability}[{ra: register}], {rd: register} => 0x4 @ 0x1`1 @ cb @ ra @ rd
   ld.w {rd: register}, {cb: short_capability}[{ra: register}] => 0x5 @ 0x0`1 @ cb @ ra @ rd
