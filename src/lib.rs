@@ -31,7 +31,7 @@ impl Foxmulator {
       let _guard = MUTEX.lock().unwrap();
 
       let mut value = None;
-      std::mem::swap(&mut value, &mut FOXMULATOR);
+      std::ptr::swap(std::ptr::addr_of_mut!(value), std::ptr::addr_of_mut!(FOXMULATOR));
 
       if value.is_some() {
         state::sail_interop::STATE = state::State::new();
