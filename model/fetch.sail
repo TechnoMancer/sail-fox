@@ -21,7 +21,12 @@ function fetch_and_execute() : unit -> unit =
 
     let instruction = read_u16_be(instruction_address);
     
-    let (ast, (predicate, expected)) = code_word(instruction);
+    let (ast, pred) = code_word(instruction);
+
+    let (predicate, expected) : instruction_predicate = match pred {
+      None() => always,
+      Some(pred) => pred
+    };
 
     /*
     let s = "";
