@@ -4,7 +4,10 @@ scattered mapping code_word
 /* Bidirectional Mapping */
 
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0000 @ 0b0000 <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ 0b0000), None())
-mapping clause code_word = 0b0000 @ 0b0000 @ 0b0000 @ 0b0001 <-> (HALT(), None())
+/* 
+| 0000 1111 0000 0000 | temporary halt.
+ */
+mapping clause code_word = 0b0000 @ 0b1111 @ 0b0000 @ 0b0000 <-> (HALT(), None())
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0000 @ x : bits(4) <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ x), None())
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0001 @ 0b0000 <-> (NOP(), None())
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0001 @ x : bits(4) <-> (HINT(x), None())

@@ -115,7 +115,10 @@
 
 #ruledef fox {
   invalid => 0x0000
-  halt => 0x0001
+; Temporarily use a reserved instruction as an explicit expected halt request to the emulator model until
+; somethng that can reasonably signal this in general.
+; | 0000 1111 dddd aaaa | reserved
+  halt => 0x0F00
   nop  => 0x0010
 
   b {imm: short_relative_address} => 0x01 @ imm;
