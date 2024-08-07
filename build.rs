@@ -11,34 +11,29 @@ fn main() {
     .stdout;
   let sail_home = std::str::from_utf8(&sail_home).expect("Sail's output is not UTF-8?").trim_end(); 
 
-  let sail_src = vec![
-    "model/prelude.sail",
-    "model/operators.sail",
-    "model/immediates.sail",
-    "model/types.sail",
-    "model/registers/predicates.sail",
-    "model/registers/registers.sail",
-    "model/registers/system.sail",
-    "model/state.sail",
-    "model/instructions/ast.sail",
-    "model/instructions/encoding_word.sail",
-    "model/instructions/block.sail",
-    "model/instructions/execute.sail",
-    "model/instructions/assembly.sail",
-    "model/fetch.sail",
-    "model/main.sail"
-  ];
+  let sail_files = Command::new("sail")
+    .arg("--no-memo-z3")
+    .args(["--project", "model/fox.sail_project"])
+    .arg("--list-files")
+    .arg("main")
+    .output().expect("failed to retrieve project file list")
+    .stdout;
+  let sail_files = std::str::from_utf8(&sail_files).expect("Sail's output is not UTF-8?");
 
-  println!("cargo:rustc-link-lib=gmp");
-
-  for file in &sail_src {
+  for file in sail_files.split_ascii_whitespace() {
     println!("cargo:rerun-if-changed={}", file);
   }
 
+  println!("cargo:rustc-link-lib=gmp");
+
+  println!("cargo:rerun-if-changed=model/fox.sail_project");
+
   let sail = Command::new("sail")
+    .arg("--no-memo-z3")
     .arg("-c")
-    .args(["-o", &format!("{}/foxmulator", out_dir), "-c_no_main"])
-    .args(&sail_src)
+    .args(["-o", &format!("{}/foxmulator", out_dir), "-c-no-main"])
+    .args(["--project", "model/fox.sail_project"])
+    .arg("main")
     .output()
     .expect("Sail model failed to execute");
 

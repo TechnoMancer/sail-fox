@@ -1,0 +1,43 @@
+
+prelude {
+    files
+        prelude.sail,
+        types.sail,
+        operators.sail,
+        immediates.sail,
+}
+
+registers {
+    requires prelude
+    files
+        registers/predicates.sail,
+        registers/registers.sail,
+        registers/system.sail,
+}
+
+instructions {
+    requires prelude
+    requires registers
+    files
+        instructions/ast.sail,
+        instructions/encoding_word.sail,
+        instructions/block.sail,
+        instructions/execute.sail,
+        instructions/assembly.sail,
+}
+
+fetch {
+    requires prelude
+    requires registers
+    requires instructions
+    files
+        fetch.sail
+}
+
+main {
+    requires registers
+    requires fetch
+    files
+        state.sail,
+        main.sail,
+}
