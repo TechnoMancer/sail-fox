@@ -2,7 +2,8 @@
 pub struct State {
   pub ia: usize,
   pub r: [u16; 16],
-  pub p: [bool; 15]
+  pub p: [bool; 15],
+  pub t: [u16; 8],
 }
 
 impl State {
@@ -10,7 +11,8 @@ impl State {
     return State {
       ia: 0,
       r: [0; 16],
-      p: [true; 15]
+      p: [true; 15],
+      t: [0; 8],
     }
   }
 }

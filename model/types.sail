@@ -10,4 +10,8 @@ type predicate_index = bits(4)
 type predicate_number ('n : Int), 0 <= 'n < 16 = atom('n)
 type predicate_type = bits(1)
 
+type target_index = bits(3)
+type target_number ('n : Int), 0 <= 'n < 8 = atom('n)
+type target_type = word
+
 enum Retired = { RETIRE_SUCCESS, RETIRE_FAIL }

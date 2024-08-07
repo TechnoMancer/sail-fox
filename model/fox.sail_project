@@ -13,6 +13,7 @@ registers {
         registers/predicates.sail,
         registers/registers.sail,
         registers/system.sail,
+        registers/targets.sail,
 }
 
 instructions {

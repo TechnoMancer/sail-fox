@@ -16,10 +16,12 @@ fbits read_u16_be(fbits);
 fbits read_ia(unit);
 fbits read_register(fbits);
 fbits read_predicate(fbits);
+fbits read_target(fbits);
 
 unit write_ia(fbits);
 unit write_register(fbits, fbits);
 unit write_predicate(fbits, bool);
+unit write_target(fbits, fbits);
 
 /* Random stuff */
 
