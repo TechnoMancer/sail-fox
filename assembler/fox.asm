@@ -33,61 +33,25 @@
   p4 => 0x4
   p5 => 0x5
   p6 => 0x6
-  p7 => 0x7
-  p8 => 0x8
-  p9 => 0x9
-  p10 => 0xA
-  p11 => 0xB
-  p12 => 0xC
-  p13 => 0xD
-  p14 => 0xE
-  p15 => 0xF
-  pa => 0xA
-  pb => 0xB
-  pc => 0xC
-  pd => 0xD
-  pe => 0xE
-  pf => 0xF
+  true => 0x7
+  !p0 => 0x8
+  !p1 => 0x9
+  !p2 => 0xA
+  !p3 => 0xB
+  !p4 => 0xC
+  !p5 => 0xD
+  !p6 => 0xE
 }
 
-#subruledef capability {
-  c0 => 0x0
-  c1 => 0x1
-  c2 => 0x2
-  c3 => 0x3
-  c4 => 0x4
-  c5 => 0x5
-  c6 => 0x6
-  c7 => 0x7
-  c8 => 0x8
-  c9 => 0x9
-  c10 => 0xA
-  c11 => 0xB
-  c12 => 0xC
-  c13 => 0xD
-  c14 => 0xE
-  c15 => 0xF
-  ca => 0xA
-  cb => 0xB
-  cc => 0xC
-  cd => 0xD
-  ce => 0xE
-  cf => 0xF
-}
-
-#subruledef short_capability {
-  c0 => 0x0`3
-  c1 => 0x1`3
-  c2 => 0x2`3
-  c3 => 0x3`3
-  c12 => 0x4`3
-  c13 => 0x5`3
-  c14 => 0x6`3
-  c15 => 0x7`3
-  cc => 0x4`3
-  cd => 0x5`3
-  ce => 0x6`3
-  cf => 0x7`3
+#subruledef target {
+  t0 => 0x0
+  t1 => 0x1
+  t2 => 0x2
+  t3 => 0x3
+  t4 => 0x4
+  t5 => 0x5
+  t6 => 0x6
+  lr => 0x7
 }
 
 #subruledef short_block_length {
@@ -173,9 +137,4 @@
 ;| eq rd, 0 if p0      | 0011 1111 1110 dddd |                         |        |
 ;| neq rd, 0 if p0     | 0011 1111 1111 dddd |                         |        |
 
-  st {cb: short_capability}[{ra: register}], {rd: register} => 0x4 @ 0x1`1 @ cb @ ra @ rd
-  ld.w {rd: register}, {cb: short_capability}[{ra: register}] => 0x5 @ 0x0`1 @ cb @ ra @ rd
-  
-  st {ca: short_capability}[{imm: u4}], {rd: register} => 0x8 @ 0x1`1 @ ca @ imm @ rd
-  ld.w {rd: register}, {cb: short_capability}[{imm: u4}] => 0x9 @ 0x0`1 @ ca @ imm @ rd
 }
