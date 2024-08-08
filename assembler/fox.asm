@@ -121,7 +121,7 @@
 ; somethng that can reasonably signal this in general.
 ; | 0000 1111 dddd aaaa | reserved
   halt => 0x0F00
-  nop  => 0x0010
+  nop  => asm { and r0, r0 }
 
 ; Hybrid
 

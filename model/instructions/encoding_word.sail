@@ -21,7 +21,6 @@ mapping clause code_word = forwards 0b0001 @ 0b0011 @ rd : register_index @ ra :
 mapping clause code_word = 0b0010 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), None())
 
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0000 @ x : bits(4) <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ x), None())
-mapping clause code_word = 0b0000 @ 0b0000 @ 0b0001 @ 0b0000 <-> (NOP(), None())
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0001 @ x : bits(4) <-> (HINT(x), None())
 
 /* 
