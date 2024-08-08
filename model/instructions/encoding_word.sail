@@ -4,14 +4,21 @@ scattered mapping code_word
 /* Bidirectional Mapping */
 
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0000 @ 0b0000 <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ 0b0000), None())
-/* 
-| 0000 1111 0000 0000 | temporary halt.
- */
+
+//| 0000 1111 0000 0000 | temporary halt.
 mapping clause code_word = 0b0000 @ 0b1111 @ 0b0000 @ 0b0000 <-> (HALT(), None())
+
+//| 0001 0000 dddd aaaa | and rd, ra
+mapping clause code_word = forwards 0b0001 @ 0b0000 @ rd : register_index @ ra : register_index => (AND(rd, rd, ra), None())
+//| 0001 0001 dddd aaaa | or rd, ra
+mapping clause code_word = forwards 0b0001 @ 0b0001 @ rd : register_index @ ra : register_index => (OR(rd, rd, ra), None())
+//| 0001 0010 dddd aaaa | xor rd, ra
+mapping clause code_word = forwards 0b0001 @ 0b0010 @ rd : register_index @ ra : register_index => (XOR(rd, rd, ra), None())
+//| 0001 0011 dddd aaaa | andc rd, ra
+mapping clause code_word = forwards 0b0001 @ 0b0011 @ rd : register_index @ ra : register_index => (ANDC(rd, rd, ra), None())
 
 //| 0010 1111 bbnn nnnn | block (b = branch count, n = instruction word count - 1)
 mapping clause code_word = 0b0010 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), None())
-
 
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0000 @ x : bits(4) <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ x), None())
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0001 @ 0b0000 <-> (NOP(), None())
@@ -72,10 +79,6 @@ mapping clause code_word = forwards 0b0010 @ 0b0100 @ ra : register_index @ rd :
 mapping clause code_word = forwards 0b0010 @ 0b0101 @ ra : register_index @ rd : register_index => (SUB(rd, rd, ra), None())
 mapping clause code_word = 0b0010 @ 0b0110 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0110 @ x), None())
 mapping clause code_word = 0b0010 @ 0b0111 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0111 @ x), None())
-mapping clause code_word = forwards 0b0010 @ 0b1000 @ ra : register_index @ rd : register_index => (AND(rd, rd, ra), None())
-mapping clause code_word = forwards 0b0010 @ 0b1001 @ ra : register_index @ rd : register_index => (ANDC(rd, rd, ra), None())
-mapping clause code_word = forwards 0b0010 @ 0b1010 @ ra : register_index @ rd : register_index => (OR(rd, rd, ra), None())
-mapping clause code_word = forwards 0b0010 @ 0b1011 @ ra : register_index @ rd : register_index => (XOR(rd, rd, ra), None())
 
 /*
 | lt p0, rd, ra           | 0010 1100 aaaa dddd |                     |        |
@@ -171,11 +174,16 @@ mapping clause code_word = 0b0011 @ 0b1111 @ x : bits(8)     <-> (UNALLOCATED(0b
 
 /* Backwards Mapping */
 
+//| 0001 0000 dddd aaaa | and rd, ra
+mapping clause code_word = backwards (AND(rd, ra, rb), None()) if ra == rd  => 0b0001 @ 0b0000 @ rd @ rb
+//| 0001 0001 dddd aaaa | or rd, ra
+mapping clause code_word = backwards (OR(rd, ra, rb), None()) if ra == rd   => 0b0001 @ 0b0001 @ rd @ rb
+//| 0001 0010 dddd aaaa | xor rd, ra
+mapping clause code_word = backwards (XOR(rd, ra, rb), None()) if ra == rd  => 0b0001 @ 0b0010 @ rd @ rb
+//| 0001 0011 dddd aaaa | andc rd, ra
+mapping clause code_word = backwards (ANDC(rd, ra, rb), None()) if ra == rd => 0b0001 @ 0b0011 @ rd @ rb
+
 mapping clause code_word = backwards (ADD(rd, ra, rb), None()) if ra == rd  => 0b0010 @ 0b0100 @ rb @ rd
 mapping clause code_word = backwards (SUB(rd, ra, rb), None()) if ra == rd  => 0b0010 @ 0b0101 @ rb @ rd
-mapping clause code_word = backwards (AND(rd, ra, rb), None()) if ra == rd  => 0b0010 @ 0b1000 @ rb @ rd
-mapping clause code_word = backwards (ANDC(rd, ra, rb), None()) if ra == rd => 0b0010 @ 0b1001 @ rb @ rd
-mapping clause code_word = backwards (OR(rd, ra, rb), None()) if ra == rd   => 0b0010 @ 0b1010 @ rb @ rd
-mapping clause code_word = backwards (XOR(rd, ra, rb), None()) if ra == rd  => 0b0010 @ 0b1011 @ rb @ rd
 
 end code_word

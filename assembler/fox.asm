@@ -153,6 +153,14 @@
   block ({end: block_end_address}) {target: medium_relative_address} => 
     0b1100_0010 @ 0`2 @ make_block_length(end - 2)`6 @ target
 
+; | 0001 0000 dddd aaaa | and rd, ra
+and {rd: register}, {ra: register} => 0b0001_0000 @ rd @ra
+; | 0001 0001 dddd aaaa | or rd, ra
+or {rd: register}, {ra: register} => 0b0001_0001 @ rd @ra
+; | 0001 0010 dddd aaaa | xor rd, ra
+xor {rd: register}, {ra: register} => 0b0001_0010 @ rd @ ra
+; | 0001 0011 dddd aaaa | andc rd, ra
+andc {rd: register}, {ra: register} => 0b0001_0011 @ rd @ ra
 
   b {imm: short_relative_address} => 0x01 @ imm;
   b {imm: short_relative_address} unless p0 => 0x02 @ imm;
@@ -174,10 +182,6 @@
   add {rd: register}, {ra: register} => 0x24 @ ra @ rd
   sub {rd: register}, {ra: register} => 0x25 @ ra @ rd
   subf {rd: register}, {ra: register} => 0x26 @ ra @ rd
-  and {rd: register}, {ra: register} => 0x28 @ ra @ rd
-  andc {rd: register}, {ra: register} => 0x29 @ ra @ rd
-  or {rd: register}, {ra: register} => 0x2A @ ra @ rd
-  xor {rd: register}, {ra: register} => 0x2B @ ra @ rd
   lt {rd: register}, {ra: register} => 0x2C @ ra @ rd
   lte {rd: register}, {ra: register} => 0x2D @ ra @ rd
   lt.u {rd: register}, {ra: register} => 0x2E @ ra @ rd
