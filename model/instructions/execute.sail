@@ -35,7 +35,7 @@ function clause execute BRANCH_S(imm) = {
   RETIRE_SUCCESS
 }
 
-function clause execute BLOCK_S(_, _, _) = {
+function clause execute BLOCK(_, _, _) = {
   RETIRE_FAIL
 }
 

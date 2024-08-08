@@ -8,6 +8,7 @@ register block : bits(32)
 register block_size : option(bits(32)) = None()
 register block_remaining : bits(32)
 register block_target : option(bits(32)) = None()
+register block_branches : block_branch_count
 
 register instructions_retired : bits(32)
 register blocks_retired : bits(32)

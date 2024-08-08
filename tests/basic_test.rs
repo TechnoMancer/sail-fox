@@ -5,9 +5,10 @@ fn test_nop() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
   
   foxmulator.run_assembly(r#"
-    block 2
+    block (end)
     nop
     halt
+    end:
   "#);
 
   assert_eq!(0, 0);
@@ -20,9 +21,10 @@ fn test_add() {
   foxmulator.state.r[0] = 2;
   foxmulator.state.r[1] = 1;
   foxmulator.run_assembly(r#"
-    block 2
+    block (end)
     add r0, r1
     halt
+    end:
   "#);
 
   assert_eq!(foxmulator.state.r[0], 3);
@@ -35,9 +37,10 @@ fn test_sub() {
   foxmulator.state.r[0] = 3;
   foxmulator.state.r[1] = 1;
   foxmulator.run_assembly(r#"
-    block 2
+    block (end)
     sub r0, r1
     halt
+    end:
   "#);
 
   assert_eq!(foxmulator.state.r[0], 2);
@@ -50,9 +53,10 @@ fn test_and() {
   foxmulator.state.r[0] = 0b1010;
   foxmulator.state.r[1] = 0b1100;
   foxmulator.run_assembly(r#"
-    block 2
+    block (end)
     and r0, r1
     halt
+    end:
   "#);
 
   assert_eq!(foxmulator.state.r[0], 0b1000);
@@ -65,9 +69,10 @@ fn test_or() {
   foxmulator.state.r[0] = 0b1010;
   foxmulator.state.r[1] = 0b1100;
   foxmulator.run_assembly(r#"
-    block 2
+    block (end)
     or r0, r1
     halt
+    end:
   "#);
 
   assert_eq!(foxmulator.state.r[0], 0b1110);
@@ -80,9 +85,10 @@ fn test_xor() {
   foxmulator.state.r[0] = 0b1010;
   foxmulator.state.r[1] = 0b1100;
   foxmulator.run_assembly(r#"
-    block 2
+    block (end)
     xor r0, r1
     halt
+    end:
   "#);
 
   assert_eq!(foxmulator.state.r[0], 0b0110);
@@ -95,9 +101,10 @@ fn test_andc() {
   foxmulator.state.r[0] = 0b1010;
   foxmulator.state.r[1] = 0b1100;
   foxmulator.run_assembly(r#"
-    block 2
+    block (end)
     andc r0, r1
     halt
+    end:
   "#);
 
   assert_eq!(foxmulator.state.r[0], 0b0010);
@@ -110,11 +117,11 @@ fn test_b() {
   foxmulator.state.r[0] = 3;
   foxmulator.state.r[1] = 1;
   foxmulator.run_assembly(r#"
-    block 2
+    block (#2)
     b 6
     sub r0, r1
     sub r0, r1
-    block 1
+    block (#1)
     halt
   "#);
 

@@ -99,6 +99,25 @@ mapping sep : unit <-> string = {
   () <-> opt_spc() ^ "," ^ def_spc()
 }
 
+val hex_bits_2 : bits(2) <-> string
+val hex_bits_2_forwards = pure "decimal_string_of_bits" : bits(2) -> string
+val hex_bits_2_forwards_matches : bits(2) -> bool
+function hex_bits_2_forwards_matches bv = true
+val "hex_bits_2_matches_prefix" : string -> option((bits(2), nat))
+val hex_bits_2_backwards_matches : string -> bool
+function hex_bits_2_backwards_matches s = match s {
+  s if match hex_bits_2_matches_prefix(s) {
+    Some (_, n) if n == string_length(s) => true,
+    _ => false
+  } => true,
+  _ => false
+}
+val hex_bits_2_backwards : string -> bits(2)
+function hex_bits_2_backwards s =
+  match hex_bits_2_matches_prefix(s) {
+      Some (bv, n) if n == string_length(s) => bv
+  }
+
 val hex_bits_4 : bits(4) <-> string
 val hex_bits_4_forwards = pure "decimal_string_of_bits" : bits(4) -> string
 val hex_bits_4_forwards_matches : bits(4) -> bool
@@ -134,6 +153,25 @@ function hex_bits_5_backwards_matches s = match s {
 val hex_bits_5_backwards : string -> bits(5)
 function hex_bits_5_backwards s =
   match hex_bits_5_matches_prefix(s) {
+      Some (bv, n) if n == string_length(s) => bv
+  }
+
+val hex_bits_6 : bits(6) <-> string
+val hex_bits_6_forwards = pure "decimal_string_of_bits" : bits(6) -> string
+val hex_bits_6_forwards_matches : bits(6) -> bool
+function hex_bits_6_forwards_matches bv = true
+val "hex_bits_6_matches_prefix" : string -> option((bits(6), nat))
+val hex_bits_6_backwards_matches : string -> bool
+function hex_bits_6_backwards_matches s = match s {
+  s if match hex_bits_6_matches_prefix(s) {
+    Some (_, n) if n == string_length(s) => true,
+    _ => false
+  } => true,
+  _ => false
+}
+val hex_bits_6_backwards : string -> bits(6)
+function hex_bits_6_backwards s =
+  match hex_bits_6_matches_prefix(s) {
       Some (bv, n) if n == string_length(s) => bv
   }
 

@@ -3,13 +3,9 @@ function fetch_and_execute() : unit -> unit =
     instruction_address = if unsigned(block_remaining) == 0 then {
       match block_target {
         None() => {
-          /* TODO: Make this properly trap */
-          print("block target not set");
-          halted = true;
           instruction_address
         },
         Some(address) => {
-          block = address;
           block_size = None();
           block_target = None();
           address

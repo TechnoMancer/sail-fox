@@ -8,6 +8,11 @@ mapping clause code_word = 0b0000 @ 0b0000 @ 0b0000 @ 0b0000 <-> (UNALLOCATED(0b
 | 0000 1111 0000 0000 | temporary halt.
  */
 mapping clause code_word = 0b0000 @ 0b1111 @ 0b0000 @ 0b0000 <-> (HALT(), None())
+
+//| 0010 1111 bbnn nnnn | block (b = branch count, n = instruction word count - 1)
+mapping clause code_word = 0b0010 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), None())
+
+
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0000 @ x : bits(4) <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ x), None())
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0001 @ 0b0000 <-> (NOP(), None())
 mapping clause code_word = 0b0000 @ 0b0000 @ 0b0001 @ x : bits(4) <-> (HINT(x), None())
@@ -22,7 +27,7 @@ mapping clause code_word = 0b0000 @ 0b0000 @ x : bits(8)     <-> (UNALLOCATED(0b
 
 mapping clause code_word = 0b0000 @ 0b0001 @ imm             <-> (BRANCH_S(imm), None())
 mapping clause code_word = 0b0000 @ 0b001 @ expected : bits(1) @ imm   <-> (BRANCH_S(imm), Some(0b0000, expected))
-mapping clause code_word = 0b0000 @ 0b0100 @ seq @ l0 @ imm  <-> (BLOCK_S(seq, l0, imm), None())
+
 mapping clause code_word = 0b0000 @ 0b0101 @ imm             <-> (BRANCHL_S(imm), None())
 mapping clause code_word = 0b0000 @ 0b011 @ expected :bits(1) @ imm   <-> (BRANCHL_S(imm), Some(0b0000, expected))
 mapping clause code_word = 0b0001 @ 0b0000 @ imm    @ rd     <-> (ADD_S(rd, imm), None())

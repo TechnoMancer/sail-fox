@@ -77,6 +77,44 @@
 	}
 }
 
+#subruledef block_end_address {
+  {address: u16} => {
+    assert(address % 2 == 0, "Unaligned end of block")
+
+    relative = address - $
+    assert(relative >= 0, "End of block must be after block")
+    word_count = relative >> 1
+    assert(word_count > 0, "Block cannot be empty")
+
+    word_count
+  }
+}
+
+#subruledef block_branch_count {
+  {count: u2} =>
+    count`2
+}
+
+#subruledef medium_relative_address {
+  {address: u17} => {
+    assert(address % 2 == 0, "Unaligned target label")
+
+    relative = address - $
+    target = relative >> 1
+
+    assert(target > -65536, "Target label too far before")
+    assert(target < 65535, "Target label too far after")
+
+    target`16
+  }
+}
+
+#fn make_block_length(words) => {
+  assert(words > 0, "Block cannot be empty")
+  assert(words <= 64, "Black cannot be longer than 64")
+  (words - 1)`6
+}
+
 #ruledef fox {
   invalid => 0x0000
 ; Temporarily use a reserved instruction as an explicit expected halt request to the emulator model until
@@ -85,12 +123,40 @@
   halt => 0x0F00
   nop  => 0x0010
 
+; Hybrid
+
+; | 0010 1111 bbnn nnnn | block (b = branch count, n = instruction word count)
+  block ({branches: block_branch_count}, #{words: u7}) => 
+    0b0010_1111 @ branches @ make_block_length(words)`6
+
+  ; Block length does not include block insn
+  block ({branches: block_branch_count}, {end: block_end_address}) => 
+    0b0010_1111 @ branches @ make_block_length(end - 1)`6
+
+  block (#{words: u7}) =>
+    0b0010_1111 @ 0`2 @ make_block_length(words)`6
+  ; Block length does not include block insn
+  block ({end: block_end_address}) => 
+    0b0010_1111 @ 0`2 @ make_block_length(end - 1)`6
+
+
+; | 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count), t1 = block + simm << 1
+  block ({branches: block_branch_count}, #{words: u6}) {target: medium_relative_address} =>
+    0b1100_0010 @ branches @ make_block_length(words) @ target
+  ; Block lenght does not include block insn
+  block ({branches: block_branch_count}, {end: block_end_address}) {target: medium_relative_address} => 
+    0b1100_0010 @ branches @ make_block_length(end - 2)`6 @ target
+
+  block (#{words: u6}) {target: medium_relative_address} =>
+    0b1100_0010 @ 0`2 @ make_block_length(words) @ target
+  ; Block lenght does not include block insn
+  block ({end: block_end_address}) {target: medium_relative_address} => 
+    0b1100_0010 @ 0`2 @ make_block_length(end - 2)`6 @ target
+
+
   b {imm: short_relative_address} => 0x01 @ imm;
   b {imm: short_relative_address} unless p0 => 0x02 @ imm;
   b {imm: short_relative_address} if p0 => 0x03 @ imm;
-
-  block {imm: short_block_length} => 0x04 @ 0x0`1 @ 0x0`2 @ imm
-  block.s {imm: short_block_length} => 0x04 @ 0x01`1 @ 0x0`2 @ imm
 
   ; add l0 looping flags
 
