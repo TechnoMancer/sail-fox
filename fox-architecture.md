@@ -67,8 +67,8 @@ Note: Is a 3-operand add/sub here worth it? It costs one eight of the entire enc
 | 0000 1011 1ddd pppp | call td (predicated)
 | 0000 1100 dddd aaaa | inc rd, ra
 | 0000 1101 dddd aaaa | dec rd, ra
-| 0000 1110 dddd aaaa | reserved
-| 0000 1111 dddd aaaa | reserved
+| 0000 1110 dddd aaaa | inc.c rd, ra, p1 (carry in/out in p1)
+| 0000 1111 dddd aaaa | dec.c rd, ra, p1 (carry in/out in p1)
 | 0001 0000 dddd aaaa | and rd, ra
 | 0001 0001 dddd aaaa | or rd, ra
 | 0001 0010 dddd aaaa | xor rd, ra
@@ -94,8 +94,8 @@ Note: Is a 3-operand add/sub here worth it? It costs one eight of the entire enc
 | 0010 0011 dddd iiii | dec rd, imm + 1
 | 0010 0100 dddd iiii | inc rd, imm + 1 if p0
 | 0010 0101 dddd iiii | dec rd, imm + 1 if p0
-| 0010 0110 dddd iiii | inc rd, imm + 1 unless p0
-| 0010 0111 dddd iiii | dec rd, imm + 1 unless p0
+| 0010 0110 dddd iiii | reserved
+| 0010 0111 dddd iiii | reserved
 | 0010 1000 dddd iiii | shl rd, imm + 1
 | 0010 1001 dddd iiii | shr.a rd, imm + 1
 | 0010 1010 dddd iiii | shr.l rd, imm + 1
@@ -121,8 +121,8 @@ Note: We can probably make a CPU that is useful without supporting any of these 
 | 1100 0000 dddd aaaa bbbb pppp 0000 0011 | reserved
 | 1100 0000 dddd aaaa bbbb pppp 0000 0100 | add rd, ra, rb (predicated)
 | 1100 0000 dddd aaaa bbbb pppp 0000 0101 | sub rd, ra, rb (predicated)
-| 1100 0000 dddd aaaa bbbb pppp 0000 0110 | reserved
-| 1100 0000 dddd aaaa bbbb pppp 0000 0111 | reserved
+| 1100 0000 dddd aaaa bbbb pppp 0000 0110 | add.c rd, ra, rb, p1 (predicated, carry in/out in p1)
+| 1100 0000 dddd aaaa bbbb pppp 0000 0111 | sub.c rd, ra, rb, p1 (predicated, carry in/out in p1)
 | 1100 0000 dddd aaaa bbbb pppp 0000 1000 | and rd, ra, rb (predicated)
 | 1100 0000 dddd aaaa bbbb pppp 0000 1001 | or rd, ra, rb (predicated)
 | 1100 0000 dddd aaaa bbbb pppp 0000 1010 | xor rd, ra, rb (predicated)
@@ -171,4 +171,3 @@ Note: We can probably make a CPU that is useful without supporting any of these 
 | 1100 0100 dddd 1101 iiii iiii iiii iiii | reserved
 | 1100 0100 dddd 1110 iiii iiii iiii iiii | reserved
 | 1100 0100 dddd 1111 iiii iiii iiii iiii | reserved
-
