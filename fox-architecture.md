@@ -102,7 +102,7 @@ Note: Is a 3-operand add/sub here worth it? It costs one eight of the entire enc
 | 0010 1100 dddd iiii | ror rd, imm + 1
 | 0010 1101 dddd iiii | load rd, sp[imm]
 | 0010 1110 dddd iiii | store rd, sp[imm]
-| 0010 1111 bbnn nnnn | block (b = branch count, n = instruction word count)
+| 0010 1111 bbnn nnnn | block (b = branch count, n = instruction word count - 1)
 | 0011 xxxx xxxx xxxx | reserved
 | 0100 bbbb aaaa dddd | add rd, ra, rb
 | 0101 xxxx xxxx xxxx | reserved
@@ -152,7 +152,7 @@ Note: We can probably make a CPU that is useful without supporting any of these 
 | 1100 0001 dddd aaaa iiii iiii iiii 1101 | reserved
 | 1100 0001 dddd aaaa iiii iiii iiii 1110 | reserved
 | 1100 0001 dddd aaaa iiii iiii iiii 1111 | reserved
-| 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count), t1 = block + simm << 1
+| 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count - 1), t0 = block + simm << 1
 | 1100 0011 0ddd iiii iiii iiii iiii iiii | target td, block + simm << 1
 | 1100 0011 1ddd iiii iiii iiii iiii iiii | reserved
 | 1100 0100 dddd 0000 iiii iiii iiii iiii | reserved
