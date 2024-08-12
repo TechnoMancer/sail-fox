@@ -18,3 +18,12 @@ type block_length = bits(6)
 type block_branch_count = bits(2)
 
 enum Retired = { RETIRE_SUCCESS, RETIRE_FAIL }
+
+enum HaltReason = {ERROR, HALT_INSN, UNKNOWN}
+
+val halt_reason_code : HaltReason <-> bits(2)
+mapping halt_reason_code = {
+    ERROR <-> 0b00,
+    HALT_INSN <-> 0b01,
+    UNKNOWN <-> 0b10,
+}

@@ -8,6 +8,7 @@ mod sail;
 mod state;
 
 pub use state::State;
+pub use state::HaltReason;
 
 pub struct Foxmulator {
   pub state: State,

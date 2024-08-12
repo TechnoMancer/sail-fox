@@ -4,6 +4,7 @@ pub struct State {
   pub r: [u16; 16],
   pub p: [bool; 15],
   pub t: [u16; 8],
+  pub halt_reason: HaltReason,
 }
 
 impl State {
@@ -13,6 +14,7 @@ impl State {
       r: [0; 16],
       p: [true; 15],
       t: [0; 8],
+      halt_reason: HaltReason::UNKNOWN,
     }
   }
 }
@@ -23,5 +25,11 @@ impl Default for State {
   }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum HaltReason {
+  ERROR,
+  HALT,
+  UNKNOWN,
+}
 
 pub mod sail_interop;

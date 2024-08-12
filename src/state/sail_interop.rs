@@ -1,6 +1,8 @@
 use crate::sail;
 use crate::state::State;
 
+use super::HaltReason;
+
 pub static mut STATE: State = State::new();
 
 #[no_mangle]
@@ -11,6 +13,27 @@ pub unsafe extern "C" fn read_ia() -> sail::fbits {
 #[no_mangle]
 pub unsafe extern "C" fn write_ia(value: sail::fbits) {
   return STATE.ia = value as usize;
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn read_halt_reason() -> sail::fbits {
+  let halt_reason = match STATE.halt_reason {
+    HaltReason::ERROR => 0,
+    HaltReason::HALT => 1,
+    HaltReason::UNKNOWN => 2,
+  };
+  return halt_reason as sail::fbits;
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn write_halt_reason(value: sail::fbits) {
+  let halt_reason = match value {
+    0 => HaltReason::ERROR,
+    1 => HaltReason::HALT,
+    2 => HaltReason::UNKNOWN,
+    _ => HaltReason::UNKNOWN,
+  };
+  return STATE.halt_reason = halt_reason;
 }
 
 #[no_mangle]

@@ -1,4 +1,5 @@
 use foxmulator::Foxmulator;
+use foxmulator::HaltReason;
 
 #[test]
 fn test_nop() {
@@ -11,7 +12,7 @@ fn test_nop() {
     end:
   "#);
 
-  assert_eq!(0, 0);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::HALT);
 }
 
 #[test]
@@ -28,6 +29,7 @@ fn test_add() {
   "#);
 
   assert_eq!(foxmulator.state.r[0], 3);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::HALT);
 }
 
 #[test]
@@ -44,6 +46,7 @@ fn test_sub() {
   "#);
 
   assert_eq!(foxmulator.state.r[0], 2);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::HALT);
 }
 
 #[test]
@@ -60,6 +63,7 @@ fn test_and() {
   "#);
 
   assert_eq!(foxmulator.state.r[0], 0b1000);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::HALT);
 }
 
 #[test]
@@ -76,6 +80,7 @@ fn test_or() {
   "#);
 
   assert_eq!(foxmulator.state.r[0], 0b1110);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::HALT);
 }
 
 #[test]
@@ -92,6 +97,7 @@ fn test_xor() {
   "#);
 
   assert_eq!(foxmulator.state.r[0], 0b0110);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::HALT);
 }
 
 #[test]
@@ -108,6 +114,7 @@ fn test_andc() {
   "#);
 
   assert_eq!(foxmulator.state.r[0], 0b0010);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::HALT);
 }
 
 #[test]
@@ -126,4 +133,5 @@ fn test_b() {
   "#);
 
   assert_eq!(foxmulator.state.r[0], 2);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::HALT);
 }

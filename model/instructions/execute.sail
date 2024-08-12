@@ -122,13 +122,18 @@ function clause execute SUB_S(rd, imm) = { R(rd) = R(rd) - unsigned_extend(16, i
 function clause execute AND_S(rd, imm) = { R(rd) = R(rd) & signed_extend(16, imm); RETIRE_SUCCESS }
 function clause execute SET_S(rd, imm) = { R(rd) = sign_extend(16, imm); RETIRE_SUCCESS }
 
-function clause execute HALT() = { halted = true; RETIRE_SUCCESS }
+function clause execute HALT() = { 
+  halted = true; 
+  halt_reason = HALT_INSN;
+  RETIRE_SUCCESS 
+}
 function clause execute NOP() = { RETIRE_SUCCESS }
 function clause execute HINT(_) = { RETIRE_SUCCESS }
 
 /* TODO: Actually handle this maybe? */
 function clause execute (UNALLOCATED(s)) = {
   halted = true;
+  halt_reason = ERROR;
   RETIRE_FAIL
 }
 
