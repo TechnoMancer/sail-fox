@@ -19,11 +19,13 @@ type block_branch_count = bits(2)
 
 enum Retired = { RETIRE_SUCCESS, RETIRE_FAIL }
 
-enum HaltReason = {ERROR, HALT_INSN, UNKNOWN}
+enum HaltReason = {ERROR, HALT_INSN, UNKNOWN_INSN, BLOCK_ERROR, UNKNOWN}
 
-val halt_reason_code : HaltReason <-> bits(2)
+val halt_reason_code : HaltReason <-> bits(3)
 mapping halt_reason_code = {
-    ERROR <-> 0b00,
-    HALT_INSN <-> 0b01,
-    UNKNOWN <-> 0b10,
+    ERROR <-> 0b000,
+    HALT_INSN <-> 0b001,
+    UNKNOWN_INSN <-> 0b010,
+    BLOCK_ERROR <-> 0b011,
+    UNKNOWN <-> 0b100,
 }

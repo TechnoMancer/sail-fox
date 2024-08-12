@@ -18,9 +18,11 @@ pub unsafe extern "C" fn write_ia(value: sail::fbits) {
 #[no_mangle]
 pub unsafe extern "C" fn read_halt_reason() -> sail::fbits {
   let halt_reason = match STATE.halt_reason {
-    HaltReason::ERROR => 0,
-    HaltReason::HALT => 1,
-    HaltReason::UNKNOWN => 2,
+    HaltReason::Error => 0,
+    HaltReason::Halt => 1,
+    HaltReason::UnknownInstruction => 2,
+    HaltReason::BlockError => 3,
+    HaltReason::Unknown => 4,
   };
   return halt_reason as sail::fbits;
 }
@@ -28,10 +30,12 @@ pub unsafe extern "C" fn read_halt_reason() -> sail::fbits {
 #[no_mangle]
 pub unsafe extern "C" fn write_halt_reason(value: sail::fbits) {
   let halt_reason = match value {
-    0 => HaltReason::ERROR,
-    1 => HaltReason::HALT,
-    2 => HaltReason::UNKNOWN,
-    _ => HaltReason::UNKNOWN,
+    0 => HaltReason::Error,
+    1 => HaltReason::Halt,
+    2 => HaltReason::UnknownInstruction,
+    3 => HaltReason::BlockError,
+    4 => HaltReason::Unknown,
+    _ => HaltReason::Unknown,
   };
   return STATE.halt_reason = halt_reason;
 }

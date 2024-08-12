@@ -133,7 +133,7 @@ function clause execute HINT(_) = { RETIRE_SUCCESS }
 /* TODO: Actually handle this maybe? */
 function clause execute (UNALLOCATED(s)) = {
   halted = true;
-  halt_reason = ERROR;
+  halt_reason = UNKNOWN_INSN;
   RETIRE_FAIL
 }
 

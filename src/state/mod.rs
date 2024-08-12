@@ -14,7 +14,7 @@ impl State {
       r: [0; 16],
       p: [true; 15],
       t: [0; 8],
-      halt_reason: HaltReason::UNKNOWN,
+      halt_reason: HaltReason::Unknown,
     }
   }
 }
@@ -27,9 +27,11 @@ impl Default for State {
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum HaltReason {
-  ERROR,
-  HALT,
-  UNKNOWN,
+  Error,
+  Halt,
+  UnknownInstruction,
+  BlockError,
+  Unknown,
 }
 
 pub mod sail_interop;

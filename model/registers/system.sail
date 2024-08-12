@@ -26,8 +26,8 @@ function retire_block() -> unit = {
 val read_ia = monadic "read_ia" : unit -> bits(32)
 val write_ia = monadic "write_ia" : bits(32) -> unit
 
-val read_halt_reason = monadic "read_halt_reason" : unit -> bits(2)
-val write_halt_reason = monadic "write_halt_reason" : bits(2) -> unit
+val read_halt_reason = monadic "read_halt_reason" : unit -> bits(3)
+val write_halt_reason = monadic "write_halt_reason" : bits(3) -> unit
 
 function read_system_state_from_emulator () -> unit = {
   block_target = Some(read_ia());
