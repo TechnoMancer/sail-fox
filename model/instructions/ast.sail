@@ -27,5 +27,6 @@ union clause ast = HALT : unit
 union clause ast = NOP : unit
 union clause ast = HINT : bits(4)
 union clause ast = UNALLOCATED : word
+union clause ast = UNALLOCATED2 : doubleword
 
 end ast

@@ -19,6 +19,8 @@ type block_branch_count = bits(2)
 
 enum Retired = { RETIRE_SUCCESS, RETIRE_FAIL }
 
+enum instructionLength = {SINGLE_WORD, DOUBLE_WORD, NOT_ALLOCATED }
+
 enum HaltReason = {ERROR, HALT_INSN, UNKNOWN_INSN, BLOCK_ERROR, UNKNOWN}
 
 val halt_reason_code : HaltReason <-> bits(3)

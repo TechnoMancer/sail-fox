@@ -137,4 +137,10 @@ function clause execute (UNALLOCATED(s)) = {
   RETIRE_FAIL
 }
 
+function clause execute (UNALLOCATED2(s)) = {
+  halted = true;
+  halt_reason = UNKNOWN_INSN;
+  RETIRE_FAIL
+}
+
 end execute

@@ -16,8 +16,20 @@ function fetch_and_execute() : unit -> unit =
     };
 
     let instruction = read_u16_be(instruction_address);
+    let length = instruction_length(truncateLSB(instruction, 3));
     
-    let (ast, pred) = code_word(instruction);
+    let (ast, pred) : (ast, option(instruction_predicate)) = match (length) {
+      SINGLE_WORD => code_single_word(instruction),
+      DOUBLE_WORD => {
+        let instruction_second_word = read_u16_be(instruction_address + 2);
+        code_double_word(instruction @ instruction_second_word)
+        },
+      NOT_ALLOCATED => {
+        halted = true;
+        halt_reason = UNKNOWN_INSN;
+        (NOP(), None())
+      }
+    };
 
     let (predicate, expected) : instruction_predicate = match pred {
       None() => always,
@@ -67,6 +79,18 @@ function fetch_and_execute() : unit -> unit =
       }
     };
 
-    instruction_address = instruction_address + 2;
-    block_remaining = block_remaining - 2;
+    match (length) {
+      SINGLE_WORD => {
+        instruction_address = instruction_address + 2;
+        block_remaining = block_remaining - 2;
+      },
+      DOUBLE_WORD => {
+        instruction_address = instruction_address + 4;
+        block_remaining = block_remaining - 4;
+      },
+      NOT_ALLOCATED => {
+        ()
+      },
+    }
+    
   }

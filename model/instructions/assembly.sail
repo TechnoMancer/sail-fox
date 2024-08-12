@@ -28,5 +28,6 @@ mapping clause assembly = HALT() <-> "halt"
 mapping clause assembly = NOP() <-> "nop"
 mapping clause assembly = HINT(hint) <-> "hint" ^ spc() ^ hex_bits_4(hint)
 mapping clause assembly = UNALLOCATED(s) <-> "unallocated" ^ spc() ^ hex_bits_16(s)
+mapping clause assembly = UNALLOCATED2(s) <-> "unallocated" ^ spc() ^ hex_bits_32(s)
 
 end assembly
