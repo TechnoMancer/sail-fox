@@ -47,6 +47,7 @@ function fetch_and_execute() : unit -> unit =
           /* TODO: Make this properly trap */
           print("block failed to retire");
           halted = true;
+          halt_reason = ERROR;
         }
       },
       Some(_) => if P(predicate) == bits_to_bool(expected) then {
@@ -56,6 +57,7 @@ function fetch_and_execute() : unit -> unit =
             /* TODO: Make this properly trap */
             print("instruction failed to retire");
             halted = true;
+            halt_reason = ERROR;
           }
         };
       } else {
