@@ -125,6 +125,25 @@
 
 ; Hybrid
 
+; | 0010 0000 dddd iiii | set rd, imm + 1
+; | 0010 0001 dddd iiii | set rd, -(imm + 1)
+; | 1100 0100 dddd 0001 iiii iiii iiii iiii | set rd, simm
+; Synthetic composite set instruction to set a register to an immediate however it can, 0 is set by way of xor
+set {rd: register}, 0 => asm { xor {rd}, {rd} }
+set {rd: register}, {val: s6} => {
+  assert (val <= 16)
+  assert (val > 0)
+  0b0010_0000 @ rd @ (val - 1)`4
+}
+set {rd: register}, {val: s5} => {
+  assert (val < 0)
+  assert (val >= -16)
+  0b0010_0001 @ rd @ ((-val) - 1)`4
+}
+set {rd: register}, {val: i16} => {
+  0b1100_0100 @ rd @ 0b0001 @ val
+}
+
 ; | 0010 1111 bbnn nnnn | block (b = branch count, n = instruction word count)
   block ({branches: block_branch_count}, #{words: u7}) => 
     0b0010_1111 @ branches @ make_block_length(words)`6

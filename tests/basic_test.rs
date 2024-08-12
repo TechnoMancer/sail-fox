@@ -118,6 +118,46 @@ fn test_andc() {
 }
 
 #[test]
+fn test_set() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.r[0] = 0xcafe;
+  foxmulator.run_assembly(r#"
+    block (end)
+    set r0, 0
+    set r1, 1
+    set r2, -1
+    set r3, 15
+    set r4, -15
+    set r5, 16
+    set r6, -16
+    set r7, 0xffff
+    set r8, 0xcafe
+    set r9, 0xff
+    set r10, 0xff00
+    set r11, -100
+    set r12, -30000
+    halt
+    end:
+  "#);
+
+  assert_eq!(foxmulator.state.r[0], 0);
+  assert_eq!(foxmulator.state.r[1], 1);
+  assert_eq!(foxmulator.state.r[2], (-1i16) as u16);
+  assert_eq!(foxmulator.state.r[3], 15);
+  assert_eq!(foxmulator.state.r[4], (-15i16) as u16);
+  assert_eq!(foxmulator.state.r[5], 16);
+  assert_eq!(foxmulator.state.r[6], (-16i16) as u16);
+  assert_eq!(foxmulator.state.r[7], 0xffff);
+  assert_eq!(foxmulator.state.r[8], 0xcafe);
+  assert_eq!(foxmulator.state.r[9], 0x00ff);
+  assert_eq!(foxmulator.state.r[10], 0xff00);
+  assert_eq!(foxmulator.state.r[11], (-100i16) as u16);
+  assert_eq!(foxmulator.state.r[12], (-30000i16) as u16);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+}
+
+#[test]
 fn test_b() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 

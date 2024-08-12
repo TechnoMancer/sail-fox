@@ -120,7 +120,15 @@ function clause execute XOR(rd, ra, rb) = {
 function clause execute ADD_S(rd, imm) = { R(rd) = R(rd) + unsigned_extend(16, imm); RETIRE_SUCCESS }
 function clause execute SUB_S(rd, imm) = { R(rd) = R(rd) - unsigned_extend(16, imm); RETIRE_SUCCESS }
 function clause execute AND_S(rd, imm) = { R(rd) = R(rd) & signed_extend(16, imm); RETIRE_SUCCESS }
-function clause execute SET_S(rd, imm) = { R(rd) = sign_extend(16, imm); RETIRE_SUCCESS }
+function clause execute SET_S(rd, imm, sign) = {
+    let value = zero_extend(16, imm) + 0x0001;
+    if sign == 0b0 then
+      R(rd) = value 
+    else
+      R(rd) = 0x0000 - value;
+    RETIRE_SUCCESS 
+  }
+function clause execute SET_W(rd, imm) = { R(rd) = imm; RETIRE_SUCCESS }
 
 function clause execute HALT() = { 
   halted = true; 

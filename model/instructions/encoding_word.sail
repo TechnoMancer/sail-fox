@@ -26,6 +26,10 @@ mapping clause code_single_word = forwards 0b0001 @ 0b0010 @ rd : register_index
 //| 0001 0011 dddd aaaa | andc rd, ra
 mapping clause code_single_word = forwards 0b0001 @ 0b0011 @ rd : register_index @ ra : register_index => (ANDC(rd, rd, ra), None())
 
+//| 0010 0000 dddd iiii | set rd, imm + 1
+//| 0010 0001 dddd iiii | set rd, -(imm + 1)
+mapping clause code_single_word = 0b0010 @ 0b000 @ sign @ rd @     imm <-> (SET_S(rd, imm, sign), None())
+
 //| 0010 1111 bbnn nnnn | block (b = branch count, n = instruction word count - 1)
 mapping clause code_single_word = 0b0010 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), None())
 
@@ -73,13 +77,6 @@ mapping clause code_single_word = 0b0001 @ 0b1101 @ x : bits(8)     <-> (UNALLOC
 */
 mapping clause code_single_word = 0b0001 @ 0b1110 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1110 @ x), None())
 mapping clause code_single_word = 0b0001 @ 0b1111 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1111 @ x), None())
-
-mapping clause code_single_word = 0b0010 @ 0b0000 @     ra @     rd <-> (MOV(rd, ra), None())
-
-/*
-| mov cd, ca              | 0010 0001 aaaa dddd |                     |        |
-*/
-mapping clause code_single_word = 0b0010 @ 0b0001 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0001 @ x), None())
 
 mapping clause code_single_word = 0b0010 @ 0b0010 @     pa @     pd <-> (MOVP(pd, pa), None())
 mapping clause code_single_word = 0b0010 @ 0b0011 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0100 @ x), None())
@@ -200,6 +197,12 @@ end code_single_word
 
 val code_double_word : doubleword <-> (ast, option(instruction_predicate))
 scattered mapping code_double_word
+
+//| 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count - 1), t1 = block + simm << 1
+mapping clause code_double_word = 0b1100 @ 0b0010 @ b : block_branch_count @ n : block_length @ imm <-> (BLOCK(b, n, Some(imm)), None())
+
+//| 1100 0100 dddd 0001 iiii iiii iiii iiii | set rd, simm
+mapping clause code_double_word = 0b1100 @ 0b0100 @ rd @ 0b0001 @ imm <-> (SET_W(rd, imm), None())
 
 mapping clause code_double_word = unallocated : bits(32) <-> (UNALLOCATED2(unallocated), None())
 
