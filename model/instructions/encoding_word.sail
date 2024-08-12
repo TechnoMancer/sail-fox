@@ -185,4 +185,4 @@ mapping clause code_word = backwards (ANDC(rd, ra, rb), None()) if ra == rd => 0
 mapping clause code_word = backwards (ADD(rd, ra, rb), None()) if ra == rd  => 0b0010 @ 0b0100 @ rb @ rd
 mapping clause code_word = backwards (SUB(rd, ra, rb), None()) if ra == rd  => 0b0010 @ 0b0101 @ rb @ rd
 
-end code_word
+mapping clause code_word = unallocated : bits(16) <-> (UNALLOCATED(unallocated), None())
