@@ -79,8 +79,8 @@ let always : predicate_encoding = 0b0111
 val predicate_decode : predicate_encoding <-> option(instruction_predicate)
 mapping predicate_decode = {
   0b1 @ 0b111 <-> None(),
-  0b1 @ pr : predicate_index <-> Some(Predicate(pr)),
-  0b0 @ pr : predicate_index <-> Some(InversePredicate(pr)),
+  0b0 @ pr : predicate_index <-> Some(Predicate(pr)),
+  0b1 @ pr : predicate_index <-> Some(InversePredicate(pr)),
 }
 
 val predicate_interp : instruction_predicate <-> (predicate_index, predicate_type)
