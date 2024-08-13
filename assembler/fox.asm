@@ -58,15 +58,6 @@
   current => 0x7
 }
 
-#subruledef short_block_length {
-  {words: u16} => {
-    assert(words >= 0)
-    assert(words <= 0x1F)
-
-    words`5
-  }
-}
-
 #subruledef short_relative_address {
 	{address: u16} => {
     assert(address % 2 == 0)
