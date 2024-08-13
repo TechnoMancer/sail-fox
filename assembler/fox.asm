@@ -197,6 +197,7 @@ set {rd: register}, {val: i16} => {
   }
 
 ; Single Word ISA
+
 ; | 0000 1011 0ddd pppp | b td (predicated)
   b {td: target} ({p: predicate}) => 0b0000_1011 @ 0b0 @ td`3 @ p`4
 ; short for always branch
@@ -206,13 +207,13 @@ set {rd: register}, {val: i16} => {
 ; short for always branch
   call {td: target} => 0b0000_1011 @ 0b1 @ td`3 @ 0b0111
 ; | 0001 0000 dddd aaaa | and rd, ra
-and {rd: register}, {ra: register} => 0b0001_0000 @ rd @ra
+  and {rd: register}, {ra: register} => 0b0001_0000 @ rd @ra
 ; | 0001 0001 dddd aaaa | or rd, ra
-or {rd: register}, {ra: register} => 0b0001_0001 @ rd @ra
+  or {rd: register}, {ra: register} => 0b0001_0001 @ rd @ra
 ; | 0001 0010 dddd aaaa | xor rd, ra
-xor {rd: register}, {ra: register} => 0b0001_0010 @ rd @ ra
+  xor {rd: register}, {ra: register} => 0b0001_0010 @ rd @ ra
 ; | 0001 0011 dddd aaaa | andc rd, ra
-andc {rd: register}, {ra: register} => 0b0001_0011 @ rd @ ra
+  andc {rd: register}, {ra: register} => 0b0001_0011 @ rd @ ra
 
 
   add {rd: register}, {imm: u4} => 0x10 @ imm @ rd
