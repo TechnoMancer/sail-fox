@@ -26,9 +26,9 @@ function clause execute SUB(rd, ra, rb) = {
   RETIRE_SUCCESS
 }
 
-function clause execute BRANCH_S(imm) = {
+function clause execute BRANCH(td) = {
   match block_target {
-    None() => block_target = Some(instruction_address + branch_extend(imm)),
+    None() => block_target = Some(T(td)),
     _ => ()
   };
 
@@ -39,10 +39,10 @@ function clause execute BLOCK(_, _, _) = {
   RETIRE_FAIL
 }
 
-function clause execute BRANCHL_S(imm) = {
+function clause execute BRANCHL(imm) = {
   T(5) = instruction_address + block_remaining;
 
-  execute(BRANCH_S(imm))
+  execute(BRANCH(imm))
 }
 
 function clause execute EQ_Z(pd, ra) = {

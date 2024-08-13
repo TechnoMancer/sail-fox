@@ -14,6 +14,11 @@ scattered mapping code_single_word
 
 mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0000 @ 0b0000 <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ 0b0000), Some(Always()))
 
+//| 0000 1011 0ddd pppp | b td (predicated)
+mapping clause code_single_word = 0b0000 @ 0b1011 @ 0b0 @ td : target_index @ p : predicate_encoding <-> (BRANCH(td), predicate_decode(p))
+//| 0000 1011 1ddd pppp | call td (predicated)
+mapping clause code_single_word = 0b0000 @ 0b1011 @ 0b1 @ td : target_index @ p : predicate_encoding <-> (BRANCHL(td), predicate_decode(p))
+
 //| 0000 1111 0000 0000 | temporary halt.
 mapping clause code_single_word = 0b0000 @ 0b1111 @ 0b0000 @ 0b0000 <-> (HALT(), Some(Always()))
 
@@ -44,11 +49,6 @@ mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0001 @ x : bits(4) <-> (HI
 */
 mapping clause code_single_word = 0b0000 @ 0b0000 @ x : bits(8)     <-> (UNALLOCATED(0b0000 @ 0b0000 @ x), Some(Always()))
 
-mapping clause code_single_word = 0b0000 @ 0b0001 @ imm             <-> (BRANCH_S(imm), Some(Always()))
-mapping clause code_single_word = 0b0000 @ 0b001 @ expected : bits(1) @ imm   <-> (BRANCH_S(imm), predicate_decode(expected@0b000))
-
-mapping clause code_single_word = 0b0000 @ 0b0101 @ imm             <-> (BRANCHL_S(imm), Some(Always()))
-mapping clause code_single_word = 0b0000 @ 0b011 @ expected :bits(1) @ imm   <-> (BRANCHL_S(imm), predicate_decode(expected@0b000))
 mapping clause code_single_word = 0b0001 @ 0b0000 @ imm    @ rd     <-> (ADD_S(rd, imm), Some(Always()))
 mapping clause code_single_word = 0b0001 @ 0b0001 @ imm    @ rd     <-> (SUB_S(rd, imm), Some(Always()))
 mapping clause code_single_word = 0b0001 @ 0b0010 @ imm    @ rd     <-> (AND_S(rd, imm), Some(Always()))

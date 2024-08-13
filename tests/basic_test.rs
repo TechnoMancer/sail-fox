@@ -186,10 +186,13 @@ fn test_b() {
   foxmulator.state.r[0] = 3;
   foxmulator.state.r[1] = 1;
   foxmulator.run_assembly(r#"
-    block (#2)
-    b 6
+    block (1, end) next
+    b t0
     sub r0, r1
+    end:
+    block (next)
     sub r0, r1
+    next:
     block (#1)
     halt
   "#);

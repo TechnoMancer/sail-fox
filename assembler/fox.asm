@@ -196,6 +196,15 @@ set {rd: register}, {val: i16} => {
     0b1100_0010 @ 0`2 @ make_block_length(end - 2)`6 @ offset`16
   }
 
+; Single Word ISA
+; | 0000 1011 0ddd pppp | b td (predicated)
+  b {td: target} ({p: predicate}) => 0b0000_1011 @ 0b0 @ td`3 @ p`4
+; short for always branch
+  b {td: target} => 0b0000_1011 @ 0b0 @ td`3 @ 0b0111
+; | 0000 1011 1ddd pppp | call td (predicated)
+  call {td: target} ({p: predicate}) => 0b0000_1011 @ 0b1 @ td`3 @ p`4
+; short for always branch
+  call {td: target} => 0b0000_1011 @ 0b1 @ td`3 @ 0b0111
 ; | 0001 0000 dddd aaaa | and rd, ra
 and {rd: register}, {ra: register} => 0b0001_0000 @ rd @ra
 ; | 0001 0001 dddd aaaa | or rd, ra
@@ -205,15 +214,6 @@ xor {rd: register}, {ra: register} => 0b0001_0010 @ rd @ ra
 ; | 0001 0011 dddd aaaa | andc rd, ra
 andc {rd: register}, {ra: register} => 0b0001_0011 @ rd @ ra
 
-  b {imm: short_relative_address} => 0x01 @ imm;
-  b {imm: short_relative_address} unless p0 => 0x02 @ imm;
-  b {imm: short_relative_address} if p0 => 0x03 @ imm;
-
-  ; add l0 looping flags
-
-  bl {imm: short_relative_address} => 0x05 @ imm
-  bl {imm: short_relative_address} unless p0 => 0x06 @ imm
-  bl {imm: short_relative_address} if p0 => 0x07 @ imm
 
   add {rd: register}, {imm: u4} => 0x10 @ imm @ rd
   sub {rd: register}, {imm: u4} => 0x11 @ imm @ rd
@@ -229,11 +229,6 @@ andc {rd: register}, {ra: register} => 0b0001_0011 @ rd @ ra
   lte.u {rd: register}, {ra: register} => 0x2F @ ra @ rd
   eq {rd: register}, {ra: register} => 0x30 @ ra @ rd
   neq {rd: register}, {ra: register} => 0x31 @ ra @ rd
-  
-  blr {rd: register} => 0x3F @ 0x0 @ rd
-  b {rd: register} => 0x3F @ 0x1 @ rd
-  b {rd: register} unless p0 => 0x3F @ 0x2 @ rd
-  b {rd: register} if p0 => 0x3F @ 0x3 @ rd
   
   eq {rd: register}, 0 => 0x3F @ 0xA @ rd
   neq {rd: register}, 0 => 0x3F @ 0xB @ rd
