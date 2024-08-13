@@ -193,8 +193,6 @@ andc {rd: register}, {ra: register} => 0b0001_0011 @ rd @ ra
 
   add {rd: register}, {imm: u4} => 0x10 @ imm @ rd
   sub {rd: register}, {imm: u4} => 0x11 @ imm @ rd
-  ; and {rd: register}, {imm: i4} => 0x12 @ imm @ rd
-  set.w {rd: register}, {imm: i4} => 0x15 @ imm @ rd
   
   mov {rd: register}, {ra: register} => 0x20 @ ra @ rd
   
