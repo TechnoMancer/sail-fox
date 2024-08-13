@@ -52,7 +52,10 @@
   t4 => 0x4
   t5 => 0x5
   t6 => 0x6
-  lr => 0x7
+  t7 => 0x7
+  link => 0x5
+  next => 0x6
+  current => 0x7
 }
 
 #subruledef short_block_length {
