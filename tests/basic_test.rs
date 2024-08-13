@@ -118,6 +118,40 @@ fn test_andc() {
 }
 
 #[test]
+fn test_not() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.r[0] = 0b1010_1010_1111_1111;
+  foxmulator.state.r[1] = 0b1100_1100_0011_0011;
+  foxmulator.run_assembly(r#"
+    block (end)
+    not r0, r1
+    halt
+    end:
+  "#);
+
+  assert_eq!(foxmulator.state.r[0], 0b0011_0011_1100_1100);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+}
+
+#[test]
+fn test_neg() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.r[0] = 54;
+  foxmulator.state.r[1] = 28;
+  foxmulator.run_assembly(r#"
+    block (end)
+    neg r0, r1
+    halt
+    end:
+  "#);
+
+  assert_eq!(foxmulator.state.r[0], -28_i16 as u16);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+}
+
+#[test]
 fn test_set() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 

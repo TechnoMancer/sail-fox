@@ -14,6 +14,11 @@ scattered mapping code_single_word
 
 mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0000 @ 0b0000 <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ 0b0000), Some(Always()))
 
+// | 0000 0001 dddd aaaa | not rd, ra
+mapping clause code_single_word = 0b0000 @ 0b0001 @ rd : register_index @ ra : register_index <-> (NOT(rd, ra), Some(Always()))
+// | 0000 0010 dddd aaaa | neg rd, ra
+mapping clause code_single_word = 0b0000 @ 0b0010 @ rd : register_index @ ra : register_index <-> (NEG(rd, ra), Some(Always()))
+
 //| 0000 1011 0ddd pppp | b td (predicated)
 mapping clause code_single_word = 0b0000 @ 0b1011 @ 0b0 @ td : target_index @ p : predicate_encoding <-> (BRANCH(td), predicate_decode(p))
 //| 0000 1011 1ddd pppp | call td (predicated)

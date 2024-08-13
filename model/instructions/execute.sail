@@ -117,6 +117,18 @@ function clause execute XOR(rd, ra, rb) = {
   RETIRE_SUCCESS
 }
 
+function clause execute NOT(rd, ra) = {
+  R(rd) = ~(R(ra));
+
+  RETIRE_SUCCESS
+}
+
+function clause execute NEG(rd, ra) = {
+  R(rd) = 0b0000_0000_0000_0000 - R(ra);
+
+  RETIRE_SUCCESS
+}
+
 function clause execute ADD_S(rd, imm) = { R(rd) = R(rd) + unsigned_extend(16, imm); RETIRE_SUCCESS }
 function clause execute SUB_S(rd, imm) = { R(rd) = R(rd) - unsigned_extend(16, imm); RETIRE_SUCCESS }
 function clause execute AND_S(rd, imm) = { R(rd) = R(rd) & signed_extend(16, imm); RETIRE_SUCCESS }

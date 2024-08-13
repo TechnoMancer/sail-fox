@@ -198,6 +198,10 @@ set {rd: register}, {val: i16} => {
 
 ; Single Word ISA
 
+; | 0000 0001 dddd aaaa | not rd, ra
+  not {rd: register}, {ra: register} => 0b0000_0001 @ rd @ ra
+; | 0000 0010 dddd aaaa | neg rd, ra
+  neg {rd: register}, {ra: register} => 0b0000_0010 @ rd @ ra
 ; | 0000 1011 0ddd pppp | b td (predicated)
   b {td: target} ({p: predicate}) => 0b0000_1011 @ 0b0 @ td`3 @ p`4
 ; short for always branch
