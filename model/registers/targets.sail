@@ -5,7 +5,7 @@ register t3 : target_type
 register t4 : target_type
 register t5 : target_type
 register t6 : target_type
-register link_register : target_type
+register t7 : target_type
 
 val rT : forall 'n, 0 <= 'n < 8. target_number('n) -> target_type
 function rT x = match x {
@@ -16,7 +16,7 @@ function rT x = match x {
   4  => t4,
   5  => t5,
   6  => t6,
-  7  => link_register,
+  7  => t7,
   _  => { assert(false, "invalid target register number"); sign_extend(16, 0b0) }
 }
 
@@ -32,7 +32,7 @@ function wT (x, in_v) = {
     4  => t4 = v,
     5  => t5 = v,
     6  => t6 = v,
-    7  => link_register = v,
+    7  => t7 = v,
     _  => assert(false, "invalid target register number")
   };
 }
@@ -54,7 +54,7 @@ mapping target_name = {
     0b100 <-> "t4",
     0b101 <-> "t5",
     0b110 <-> "t6",
-    0b111 <-> "lr",
+    0b111 <-> "t7",
 }
 
 val read_target = monadic "read_target" : target_index -> target_type
