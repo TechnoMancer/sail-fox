@@ -50,7 +50,15 @@ function fetch_and_execute() : unit -> unit =
       None() => " new",
       Some(size) => string_append(string_append(dec_str(unsigned(block_remaining)), " remaining of "), dec_str(unsigned(size)))
     });
-    let s = string_append(s, ")");
+    let s = string_append(s, ") ");
+    let s = string_append(s, match block_target {
+      None() => "fallthrough",
+      Some(target) => hex_str(unsigned(target))
+    });
+    let s = string_append(s, ", ");
+    let s = string_append(s, predicate_name(predicate));
+    let s = string_append(s, " == ");
+    let s = string_append(s, hex_str(unsigned(expected)));
     print(s);
     */
 
