@@ -110,6 +110,24 @@
   (words - 1)`6
 }
 
+#ruledef block_target_offset {
+  targ_helper {address}, {block_start}, {block_end} => {
+    assert(address <= block_start)
+    offset = address - block_start
+    target = offset >> 1
+    target`32
+  }
+  targ_helper {address}, {block_start}, {block_end} => {
+    assert(address >= block_end)
+    offset = address - block_end + 2
+    target = offset >> 1
+    target`32
+  }
+  targ_helper {address}, {block_start}, {block_end} => {
+    assert (false, "Target address cannot reside within current block")
+  }
+}
+
 #ruledef fox {
   invalid => 0x0000
 ; Temporarily use a reserved instruction as an explicit expected halt request to the emulator model until
@@ -155,17 +173,28 @@ set {rd: register}, {val: i16} => {
 
 
 ; | 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count), t1 = block + simm << 1
-  block ({branches: block_branch_count}, #{words: u6}) {target: medium_relative_address} =>
-    0b1100_0010 @ branches @ make_block_length(words) @ target
+  block ({branches: block_branch_count}, #{words: u7}) {target: medium_relative_address} => {
+    offset = asm {targ_helper {target}, $, $+({words}<<1)}
+    0b1100_0010 @ branches @ make_block_length(words) @ offset`16
+  }
   ; Block lenght does not include block insn
-  block ({branches: block_branch_count}, {end: block_end_address}) {target: medium_relative_address} => 
-    0b1100_0010 @ branches @ make_block_length(end - 2)`6 @ target
+  block ({branches: block_branch_count}, {end: block_end_address}) {target: medium_relative_address} => {
+    offset = asm {targ_helper {target}, $, {end}}
+    0b1100_0010 @ branches @ make_block_length(end - 2)`6 @ offset`16
+  }
 
-  block (#{words: u6}) {target: medium_relative_address} =>
-    0b1100_0010 @ 0`2 @ make_block_length(words) @ target
+  block (#{words: u7}) {target} => {
+    offset = asm {targ_helper {target}, $, $+({words}<<1)}
+    ;assert(offset < 65535, "Block target too far")
+    ;assert(offset > -32768, "Block target too far")
+    0b1100_0010 @ 0`2 @ make_block_length(words) @ offset`16
+  }
   ; Block lenght does not include block insn
-  block ({end: block_end_address}) {target: medium_relative_address} => 
-    0b1100_0010 @ 0`2 @ make_block_length(end - 2)`6 @ target
+  block ({end: block_end_address}) {target} => {
+    offset = asm {targ_helper {target}, $, {end}}
+    ;assert(offset < 65535, "Block target too far")
+    0b1100_0010 @ 0`2 @ make_block_length(end - 2)`6 @ offset`16
+  }
 
 ; | 0001 0000 dddd aaaa | and rd, ra
 and {rd: register}, {ra: register} => 0b0001_0000 @ rd @ra
