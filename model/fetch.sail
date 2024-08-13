@@ -3,6 +3,7 @@ function fetch_and_execute() : unit -> unit =
     instruction_address = if unsigned(block_remaining) == 0 then {
       match block_target {
         None() => {
+          block_size = None();
           instruction_address
         },
         Some(address) => {
@@ -15,13 +16,13 @@ function fetch_and_execute() : unit -> unit =
       instruction_address
     };
 
-    let instruction = read_u16_be(instruction_address);
+    let instruction = read_u16_be(zero_extend(32,instruction_address));
     let length = instruction_length(truncateLSB(instruction, 3));
     
     let (ast, pred) : (ast, option(instruction_predicate)) = match (length) {
       SINGLE_WORD => code_single_word(instruction),
       DOUBLE_WORD => {
-        let instruction_second_word = read_u16_be(instruction_address + 2);
+        let instruction_second_word = read_u16_be(zero_extend(32,instruction_address + 2));
         code_double_word(instruction @ instruction_second_word)
         },
       NOT_ALLOCATED => {

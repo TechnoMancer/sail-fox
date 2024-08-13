@@ -158,6 +158,28 @@ fn test_set() {
 }
 
 #[test]
+fn test_block() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.r[0] = 3;
+  foxmulator.state.r[1] = 1;
+  foxmulator.run_assembly(r#"
+    block (0, end) next
+    nop
+    sub r0, r1
+    end:
+    block (next)
+    sub r0, r1
+    next:
+    block (#1)
+    halt
+  "#);
+
+  assert_eq!(foxmulator.state.r[0], 1);
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+}
+
+#[test]
 fn test_b() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 

@@ -40,7 +40,7 @@ function clause execute BLOCK(_, _, _) = {
 }
 
 function clause execute BRANCHL_S(imm) = {
-  lr = instruction_address + block_remaining;
+  T(5) = instruction_address + block_remaining;
 
   execute(BRANCH_S(imm))
 }

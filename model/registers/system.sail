@@ -1,14 +1,12 @@
 register halted : bool
 register halt_reason : HaltReason = UNKNOWN
 
-register lr : bits(32)
+register instruction_address : target_type
 
-register instruction_address : bits(32)
-
-register block : bits(32)
-register block_size : option(bits(32)) = None()
-register block_remaining : bits(32)
-register block_target : option(bits(32)) = None()
+register block : target_type
+register block_size : option(target_type) = None()
+register block_remaining : target_type
+register block_target : option(target_type) = None()
 register block_branches : block_branch_count
 
 register instructions_retired : bits(32)
@@ -23,8 +21,8 @@ function retire_block() -> unit = {
   blocks_retired = blocks_retired + 1
 }
 
-val read_ia = monadic "read_ia" : unit -> bits(32)
-val write_ia = monadic "write_ia" : bits(32) -> unit
+val read_ia = monadic "read_ia" : unit -> target_type
+val write_ia = monadic "write_ia" : target_type -> unit
 
 val read_halt_reason = monadic "read_halt_reason" : unit -> bits(3)
 val write_halt_reason = monadic "write_halt_reason" : bits(3) -> unit
