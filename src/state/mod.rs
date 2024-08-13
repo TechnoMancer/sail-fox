@@ -2,7 +2,7 @@
 pub struct State {
   pub ia: usize,
   pub r: [u16; 16],
-  pub p: [bool; 15],
+  pub p: [bool; 7],
   pub t: [u16; 8],
   pub halt_reason: HaltReason,
 }
@@ -12,7 +12,7 @@ impl State {
     return State {
       ia: 0,
       r: [0; 16],
-      p: [true; 15],
+      p: [true; 7],
       t: [0; 8],
       halt_reason: HaltReason::Unknown,
     }

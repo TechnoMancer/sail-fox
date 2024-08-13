@@ -31,9 +31,13 @@ function fetch_and_execute() : unit -> unit =
       }
     };
 
-    let (predicate, expected) : instruction_predicate = match pred {
-      None() => always,
-      Some(pred) => pred
+    let (predicate, expected) : (predicate_index, predicate_type) = match pred {
+      None() => {
+        halted = true;
+        halt_reason = ERROR;
+        predicate_interp(Always())
+      },
+      Some(pred) => predicate_interp(pred)
     };
 
     /*

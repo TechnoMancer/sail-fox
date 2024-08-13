@@ -12,29 +12,29 @@ scattered mapping code_single_word
 
 /* Bidirectional Mapping */
 
-mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0000 @ 0b0000 <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ 0b0000), None())
+mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0000 @ 0b0000 <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ 0b0000), Some(Always()))
 
 //| 0000 1111 0000 0000 | temporary halt.
-mapping clause code_single_word = 0b0000 @ 0b1111 @ 0b0000 @ 0b0000 <-> (HALT(), None())
+mapping clause code_single_word = 0b0000 @ 0b1111 @ 0b0000 @ 0b0000 <-> (HALT(), Some(Always()))
 
 //| 0001 0000 dddd aaaa | and rd, ra
-mapping clause code_single_word = forwards 0b0001 @ 0b0000 @ rd : register_index @ ra : register_index => (AND(rd, rd, ra), None())
+mapping clause code_single_word = forwards 0b0001 @ 0b0000 @ rd : register_index @ ra : register_index => (AND(rd, rd, ra), Some(Always()))
 //| 0001 0001 dddd aaaa | or rd, ra
-mapping clause code_single_word = forwards 0b0001 @ 0b0001 @ rd : register_index @ ra : register_index => (OR(rd, rd, ra), None())
+mapping clause code_single_word = forwards 0b0001 @ 0b0001 @ rd : register_index @ ra : register_index => (OR(rd, rd, ra), Some(Always()))
 //| 0001 0010 dddd aaaa | xor rd, ra
-mapping clause code_single_word = forwards 0b0001 @ 0b0010 @ rd : register_index @ ra : register_index => (XOR(rd, rd, ra), None())
+mapping clause code_single_word = forwards 0b0001 @ 0b0010 @ rd : register_index @ ra : register_index => (XOR(rd, rd, ra), Some(Always()))
 //| 0001 0011 dddd aaaa | andc rd, ra
-mapping clause code_single_word = forwards 0b0001 @ 0b0011 @ rd : register_index @ ra : register_index => (ANDC(rd, rd, ra), None())
+mapping clause code_single_word = forwards 0b0001 @ 0b0011 @ rd : register_index @ ra : register_index => (ANDC(rd, rd, ra), Some(Always()))
 
 //| 0010 0000 dddd iiii | set rd, imm + 1
 //| 0010 0001 dddd iiii | set rd, -(imm + 1)
-mapping clause code_single_word = 0b0010 @ 0b000 @ sign @ rd @     imm <-> (SET_S(rd, imm, sign), None())
+mapping clause code_single_word = 0b0010 @ 0b000 @ sign @ rd @     imm <-> (SET_S(rd, imm, sign), Some(Always()))
 
 //| 0010 1111 bbnn nnnn | block (b = branch count, n = instruction word count - 1)
-mapping clause code_single_word = 0b0010 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), None())
+mapping clause code_single_word = 0b0010 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), Some(Always()))
 
-mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0000 @ x : bits(4) <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ x), None())
-mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0001 @ x : bits(4) <-> (HINT(x), None())
+mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0000 @ x : bits(4) <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ x), Some(Always()))
+mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0001 @ x : bits(4) <-> (HINT(x), Some(Always()))
 
 /* 
 | add sp, imm             | 0000 0000 0010 iiii |                     |        |
@@ -42,48 +42,48 @@ mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0001 @ x : bits(4) <-> (HI
 | reserved                | 0000 0000 01xx xxxx |                     |        |
 | reserved                | 0000 0000 1xxx xxxx |                     |        |
 */
-mapping clause code_single_word = 0b0000 @ 0b0000 @ x : bits(8)     <-> (UNALLOCATED(0b0000 @ 0b0000 @ x), None())
+mapping clause code_single_word = 0b0000 @ 0b0000 @ x : bits(8)     <-> (UNALLOCATED(0b0000 @ 0b0000 @ x), Some(Always()))
 
-mapping clause code_single_word = 0b0000 @ 0b0001 @ imm             <-> (BRANCH_S(imm), None())
-mapping clause code_single_word = 0b0000 @ 0b001 @ expected : bits(1) @ imm   <-> (BRANCH_S(imm), Some(0b0000, expected))
+mapping clause code_single_word = 0b0000 @ 0b0001 @ imm             <-> (BRANCH_S(imm), Some(Always()))
+mapping clause code_single_word = 0b0000 @ 0b001 @ expected : bits(1) @ imm   <-> (BRANCH_S(imm), predicate_decode(expected@0b000))
 
-mapping clause code_single_word = 0b0000 @ 0b0101 @ imm             <-> (BRANCHL_S(imm), None())
-mapping clause code_single_word = 0b0000 @ 0b011 @ expected :bits(1) @ imm   <-> (BRANCHL_S(imm), Some(0b0000, expected))
-mapping clause code_single_word = 0b0001 @ 0b0000 @ imm    @ rd     <-> (ADD_S(rd, imm), None())
-mapping clause code_single_word = 0b0001 @ 0b0001 @ imm    @ rd     <-> (SUB_S(rd, imm), None())
-mapping clause code_single_word = 0b0001 @ 0b0010 @ imm    @ rd     <-> (AND_S(rd, imm), None())
-mapping clause code_single_word = 0b0001 @ 0b0011 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0011 @ x), None())
-mapping clause code_single_word = 0b0001 @ 0b0100 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0100 @ x), None())
-mapping clause code_single_word = 0b0001 @ 0b0101 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0101 @ x), None())
-mapping clause code_single_word = 0b0001 @ 0b0110 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0110 @ x), None())
-mapping clause code_single_word = 0b0001 @ 0b0111 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0111 @ x), None())
+mapping clause code_single_word = 0b0000 @ 0b0101 @ imm             <-> (BRANCHL_S(imm), Some(Always()))
+mapping clause code_single_word = 0b0000 @ 0b011 @ expected :bits(1) @ imm   <-> (BRANCHL_S(imm), predicate_decode(expected@0b000))
+mapping clause code_single_word = 0b0001 @ 0b0000 @ imm    @ rd     <-> (ADD_S(rd, imm), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b0001 @ imm    @ rd     <-> (SUB_S(rd, imm), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b0010 @ imm    @ rd     <-> (AND_S(rd, imm), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b0011 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0011 @ x), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b0100 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0100 @ x), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b0101 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0101 @ x), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b0110 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0110 @ x), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b0111 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0111 @ x), Some(Always()))
 
 /*
 | sl rd, imm              | 0001 1000 iiii dddd |                     | FOX-1  |
 | sra rd, imm             | 0001 1001 iiii dddd |                     | FOX-1  |
 | srl rd, imm             | 0001 1010 iiii dddd |                     | FOX-1  |
 */
-mapping clause code_single_word = 0b0001 @ 0b1000 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1000 @ x), None())
-mapping clause code_single_word = 0b0001 @ 0b1001 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1001 @ x), None())
-mapping clause code_single_word = 0b0001 @ 0b1010 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1010 @ x), None())
+mapping clause code_single_word = 0b0001 @ 0b1000 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1000 @ x), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b1001 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1001 @ x), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b1010 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1010 @ x), Some(Always()))
 
-mapping clause code_single_word = 0b0001 @ 0b1011 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1011 @ x), None())
-mapping clause code_single_word = 0b0001 @ 0b1100 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1100 @ x), None())
-mapping clause code_single_word = 0b0001 @ 0b1101 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1101 @ x), None())
+mapping clause code_single_word = 0b0001 @ 0b1011 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1011 @ x), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b1100 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1100 @ x), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b1101 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1101 @ x), Some(Always()))
 
 /*
 | mov sr[imm], rd         | 0001 1110 iiii dddd |                     | FOX-1  |
 | mov rd, sr[imm]         | 0001 1111 iiii dddd |                     | FOX-1  |
 */
-mapping clause code_single_word = 0b0001 @ 0b1110 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1110 @ x), None())
-mapping clause code_single_word = 0b0001 @ 0b1111 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1111 @ x), None())
+mapping clause code_single_word = 0b0001 @ 0b1110 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1110 @ x), Some(Always()))
+mapping clause code_single_word = 0b0001 @ 0b1111 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1111 @ x), Some(Always()))
 
-mapping clause code_single_word = 0b0010 @ 0b0010 @     pa @     pd <-> (MOVP(pd, pa), None())
-mapping clause code_single_word = 0b0010 @ 0b0011 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0100 @ x), None())
-mapping clause code_single_word = forwards 0b0010 @ 0b0100 @ ra : register_index @ rd : register_index => (ADD(rd, rd, ra), None())
-mapping clause code_single_word = forwards 0b0010 @ 0b0101 @ ra : register_index @ rd : register_index => (SUB(rd, rd, ra), None())
-mapping clause code_single_word = 0b0010 @ 0b0110 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0110 @ x), None())
-mapping clause code_single_word = 0b0010 @ 0b0111 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0111 @ x), None())
+mapping clause code_single_word = 0b0010 @ 0b0010 @ 0b0 @    pa @  0b0 @   pd <-> (MOVP(pd, pa), Some(Always()))
+mapping clause code_single_word = 0b0010 @ 0b0011 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0100 @ x), Some(Always()))
+mapping clause code_single_word = forwards 0b0010 @ 0b0100 @ ra : register_index @ rd : register_index => (ADD(rd, rd, ra), Some(Always()))
+mapping clause code_single_word = forwards 0b0010 @ 0b0101 @ ra : register_index @ rd : register_index => (SUB(rd, rd, ra), Some(Always()))
+mapping clause code_single_word = 0b0010 @ 0b0110 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0110 @ x), Some(Always()))
+mapping clause code_single_word = 0b0010 @ 0b0111 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0111 @ x), Some(Always()))
 
 /*
 | lt p0, rd, ra           | 0010 1100 aaaa dddd |                     |        |
@@ -91,38 +91,38 @@ mapping clause code_single_word = 0b0010 @ 0b0111 @ x : bits(8)     <-> (UNALLOC
 | lt.u p0, rd, ra         | 0010 1110 aaaa dddd |                     |        |
 | lte.u p0, rd, ra        | 0010 1111 aaaa dddd |                     |        |
 */
-mapping clause code_single_word = 0b0010 @ 0b1100 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b1100 @ x), None())
-mapping clause code_single_word = 0b0010 @ 0b1101 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b1101 @ x), None())
-mapping clause code_single_word = 0b0010 @ 0b1110 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b1110 @ x), None())
-mapping clause code_single_word = 0b0010 @ 0b1110 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b1110 @ x), None())
+mapping clause code_single_word = 0b0010 @ 0b1100 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b1100 @ x), Some(Always()))
+mapping clause code_single_word = 0b0010 @ 0b1101 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b1101 @ x), Some(Always()))
+mapping clause code_single_word = 0b0010 @ 0b1110 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b1110 @ x), Some(Always()))
+mapping clause code_single_word = 0b0010 @ 0b1110 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b1110 @ x), Some(Always()))
 
 /*
 | eq p0, rd, ra           | 0011 0000 aaaa dddd |                     |        |
 | neq p0, rd, ra          | 0011 0001 aaaa dddd |                     |        |
 */
-mapping clause code_single_word = 0b0011 @ 0b0000 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0000 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b0001 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0001 @ x), None())
+mapping clause code_single_word = 0b0011 @ 0b0000 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0000 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b0001 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0001 @ x), Some(Always()))
 
-mapping clause code_single_word = 0b0011 @ 0b0010 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0010 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b0011 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0011 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b0100 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0100 @ x), None())
+mapping clause code_single_word = 0b0011 @ 0b0010 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0010 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b0011 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0011 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b0100 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0100 @ x), Some(Always()))
 
 /*
 | add.c rd, ra, p1        | 0011 0101 aaaa dddd |                     | FOX-1  |
 | sub.c rd, ra, p1        | 0011 0110 aaaa dddd |                     | FOX-1  |
 */
-mapping clause code_single_word = 0b0011 @ 0b0101 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0101 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b0110 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0110 @ x), None())
+mapping clause code_single_word = 0b0011 @ 0b0101 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0101 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b0110 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0110 @ x), Some(Always()))
 
-mapping clause code_single_word = 0b0011 @ 0b0111 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0111 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1000 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1000 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1001 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1001 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1010 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1010 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1011 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1011 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1100 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1100 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1101 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1101 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0000 @ rd     <-> (EQ_Z(0b0000, rd), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0001 @ rd     <-> (NEQ_Z(0b0000, rd), None())
+mapping clause code_single_word = 0b0011 @ 0b0111 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b0111 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1000 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1000 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1001 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1001 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1010 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1010 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1011 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1011 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1100 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1100 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1101 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1101 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0000 @ rd     <-> (EQ_Z(0b000, rd), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0001 @ rd     <-> (NEQ_Z(0b000, rd), Some(Always()))
 
 /*
 | eq rd, 0 unless p0      | 0011 1110 0010 dddd |                     |        |
@@ -136,26 +136,26 @@ mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0001 @ rd     <-> (NEQ_Z(0
 | lt rd, 0 if p0          | 0011 1110 1010 dddd |                     |        |
 | gt rd, 0 if p0          | 0011 1110 1011 dddd |                     |        |
 */
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0010 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0010 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0011 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0011 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0100 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0100 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0101 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0101 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0110 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0110 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0111 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0111 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1000 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1000 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1001 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1001 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1010 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1010 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1011 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1011 @ x), None())
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0010 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0010 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0011 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0011 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0100 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0100 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0101 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0101 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0110 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0110 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b0111 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b0111 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1000 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1000 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1001 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1001 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1010 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1010 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1011 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1011 @ x), Some(Always()))
 
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1100 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1100 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1101 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1101 @ x), None())
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1100 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1100 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1101 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1101 @ x), Some(Always()))
 
 /*
 | set.p pd, 0             | 0011 1110 1110 dddd |                     | FOX-1  |
 | set.p pd, 1             | 0011 1110 1111 dddd |                     | FOX-1  |
 */
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1110 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1110 @ x), None())
-mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1111 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1111 @ x), None())
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1110 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1110 @ x), Some(Always()))
+mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1111 @ x : bits(4) <-> (UNALLOCATED(0b0011 @ 0b1101 @ 0b1111 @ x), Some(Always()))
 
 /*
 | return predicated(d)    | 0011 1111 0000 dddd |                     |        |
@@ -175,35 +175,35 @@ mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1111 @ x : bits(4) <-> (UN
 | set.d rd, 0             | 0011 1111 1110 dddd |                     |        |
 | set.q rd, 0             | 0011 1111 1111 dddd |                     |        |
 */
-mapping clause code_single_word = 0b0011 @ 0b1111 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1110 @ x), None())
+mapping clause code_single_word = 0b0011 @ 0b1111 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1110 @ x), Some(Always()))
 
 /* Backwards Mapping */
 
 //| 0001 0000 dddd aaaa | and rd, ra
-mapping clause code_single_word = backwards (AND(rd, ra, rb), None()) if ra == rd  => 0b0001 @ 0b0000 @ rd @ rb
+mapping clause code_single_word = backwards (AND(rd, ra, rb), Some(Always())) if ra == rd  => 0b0001 @ 0b0000 @ rd @ rb
 //| 0001 0001 dddd aaaa | or rd, ra
-mapping clause code_single_word = backwards (OR(rd, ra, rb), None()) if ra == rd   => 0b0001 @ 0b0001 @ rd @ rb
+mapping clause code_single_word = backwards (OR(rd, ra, rb), Some(Always())) if ra == rd   => 0b0001 @ 0b0001 @ rd @ rb
 //| 0001 0010 dddd aaaa | xor rd, ra
-mapping clause code_single_word = backwards (XOR(rd, ra, rb), None()) if ra == rd  => 0b0001 @ 0b0010 @ rd @ rb
+mapping clause code_single_word = backwards (XOR(rd, ra, rb), Some(Always())) if ra == rd  => 0b0001 @ 0b0010 @ rd @ rb
 //| 0001 0011 dddd aaaa | andc rd, ra
-mapping clause code_single_word = backwards (ANDC(rd, ra, rb), None()) if ra == rd => 0b0001 @ 0b0011 @ rd @ rb
+mapping clause code_single_word = backwards (ANDC(rd, ra, rb), Some(Always())) if ra == rd => 0b0001 @ 0b0011 @ rd @ rb
 
-mapping clause code_single_word = backwards (ADD(rd, ra, rb), None()) if ra == rd  => 0b0010 @ 0b0100 @ rb @ rd
-mapping clause code_single_word = backwards (SUB(rd, ra, rb), None()) if ra == rd  => 0b0010 @ 0b0101 @ rb @ rd
+mapping clause code_single_word = backwards (ADD(rd, ra, rb), Some(Always())) if ra == rd  => 0b0010 @ 0b0100 @ rb @ rd
+mapping clause code_single_word = backwards (SUB(rd, ra, rb), Some(Always())) if ra == rd  => 0b0010 @ 0b0101 @ rb @ rd
 
-mapping clause code_single_word = unallocated : bits(16) <-> (UNALLOCATED(unallocated), None())
+mapping clause code_single_word = unallocated : bits(16) <-> (UNALLOCATED(unallocated), Some(Always()))
 
 end code_single_word
 
 val code_double_word : doubleword <-> (ast, option(instruction_predicate))
 scattered mapping code_double_word
 
-//| 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count - 1), t1 = block + simm << 1
-mapping clause code_double_word = 0b1100 @ 0b0010 @ b : block_branch_count @ n : block_length @ imm <-> (BLOCK(b, n, Some(imm)), None())
+// | 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count - 1), t1 = block + simm << 1
+mapping clause code_double_word = 0b1100 @ 0b0010 @ b : block_branch_count @ n : block_length @ imm <-> (BLOCK(b, n, Some(imm)), Some(Always()))
 
-//| 1100 0100 dddd 0001 iiii iiii iiii iiii | set rd, simm
-mapping clause code_double_word = 0b1100 @ 0b0100 @ rd @ 0b0001 @ imm <-> (SET_W(rd, imm), None())
+// | 1100 0100 dddd 0001 iiii iiii iiii iiii | set rd, simm
+mapping clause code_double_word = 0b1100 @ 0b0100 @ rd @ 0b0001 @ imm <-> (SET_W(rd, imm), Some(Always()))
 
-mapping clause code_double_word = unallocated : bits(32) <-> (UNALLOCATED2(unallocated), None())
+mapping clause code_double_word = unallocated : bits(32) <-> (UNALLOCATED2(unallocated), Some(Always()))
 
 end code_double_word
