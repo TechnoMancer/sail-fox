@@ -1,7 +1,11 @@
-type word = bits(16)
-type doubleword = bits(32)
-type quadword = bits(64)
+type word_width = 16
+type word = bits(word_width)
+type doubleword_width = 32
+type doubleword = bits(doubleword_width)
+type quadword_width = 64
+type quadword = bits(quadword_width)
 
+type register_width = word_width
 type register_index = bits(4)
 type register_number ('n : Int), 0 <= 'n < 16 = atom('n)
 type register_type = word
@@ -11,6 +15,7 @@ type predicate_index = bits(3)
 type predicate_number ('n : Int), 0 <= 'n < 8 = atom('n)
 type predicate_type = bits(1)
 
+type target_width = word_width
 type target_index = bits(3)
 type target_number ('n : Int), 0 <= 'n < 8 = atom('n)
 type target_type = word
