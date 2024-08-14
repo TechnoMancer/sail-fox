@@ -14,6 +14,9 @@ scattered mapping code_single_word
 
 mapping clause code_single_word = 0b0000 @ 0b0000 @ 0b0000 @ 0b0000 <-> (UNALLOCATED(0b0000 @ 0b0000 @ 0b0000 @ 0b0000), Some(Always()))
 
+//| 0000 0000 dddd aaaa | mov rd, ra (rd = ra is reserved)
+mapping clause code_single_word = forwards 0b0000 @ 0b0000 @ rd : register_index @ ra : register_index if ra != rd => (MOV(rd, ra), Some(Always()))
+
 // | 0000 0001 dddd aaaa | not rd, ra
 mapping clause code_single_word = 0b0000 @ 0b0001 @ rd : register_index @ ra : register_index <-> (NOT(rd, ra), Some(Always()))
 // | 0000 0010 dddd aaaa | neg rd, ra
@@ -183,6 +186,9 @@ mapping clause code_single_word = 0b0011 @ 0b1110 @ 0b1111 @ x : bits(4) <-> (UN
 mapping clause code_single_word = 0b0011 @ 0b1111 @ x : bits(8)     <-> (UNALLOCATED(0b0011 @ 0b1110 @ x), Some(Always()))
 
 /* Backwards Mapping */
+
+//| 0000 0000 dddd aaaa | mov rd, ra (rd = ra is reserved)
+mapping clause code_single_word = backwards (MOV(rd, ra), Some(Always())) if rd != ra => 0b0000 @ 0b0000 @ rd : register_index @ ra : register_index
 
 //| 0001 0000 dddd aaaa | and rd, ra
 mapping clause code_single_word = backwards (AND(rd, ra, rb), Some(Always())) if ra == rd  => 0b0001 @ 0b0000 @ rd @ rb

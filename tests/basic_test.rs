@@ -234,3 +234,34 @@ fn test_b() {
   assert_eq!(foxmulator.state.r[0], 2);
   assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
 }
+
+#[test]
+fn test_mov() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.r[0] = 0xcafe;
+  foxmulator.state.r[1] = 0xbeef;
+
+  foxmulator.run_assembly(r#"
+    block (end)
+    mov r2, r0
+    mov r15, r2
+    mov r2, r1
+    mov r14, r2
+    mov r3, r2
+    mov r5, r1
+    mov r10, r0
+    halt
+    end:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[0], 0xcafe);
+  assert_eq!(foxmulator.state.r[1], 0xbeef);
+  assert_eq!(foxmulator.state.r[15], 0xcafe);
+  assert_eq!(foxmulator.state.r[14], 0xbeef);
+  assert_eq!(foxmulator.state.r[2], 0xbeef);
+  assert_eq!(foxmulator.state.r[3], 0xbeef);
+  assert_eq!(foxmulator.state.r[5], 0xbeef);
+  assert_eq!(foxmulator.state.r[10], 0xcafe);
+}

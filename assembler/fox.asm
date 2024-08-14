@@ -198,6 +198,13 @@ set {rd: register}, {val: i16} => {
 
 ; Single Word ISA
 
+; | 0000 0000 dddd aaaa | mov rd, ra (rd = ra is reserved)
+
+  mov {rd: register}, {ra: register} => {
+    assert(rd != ra, "Mov to self is forbidden")
+    0b0000_0000 @ rd @ ra
+    }
+
 ; | 0000 0001 dddd aaaa | not rd, ra
   not {rd: register}, {ra: register} => 0b0000_0001 @ rd @ ra
 ; | 0000 0010 dddd aaaa | neg rd, ra
@@ -222,8 +229,6 @@ set {rd: register}, {val: i16} => {
 
   add {rd: register}, {imm: u4} => 0x10 @ imm @ rd
   sub {rd: register}, {imm: u4} => 0x11 @ imm @ rd
-  
-  mov {rd: register}, {ra: register} => 0x20 @ ra @ rd
   
   add {rd: register}, {ra: register} => 0x24 @ ra @ rd
   sub {rd: register}, {ra: register} => 0x25 @ ra @ rd
