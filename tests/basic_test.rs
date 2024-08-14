@@ -265,3 +265,27 @@ fn test_mov() {
   assert_eq!(foxmulator.state.r[5], 0xbeef);
   assert_eq!(foxmulator.state.r[10], 0xcafe);
 }
+
+#[test]
+fn test_call() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.run_assembly(r#"
+    block (1, end) test
+    call t0
+    end:
+    block (end2)
+    set r0, 1
+    halt
+    end2:
+    test:
+    block (end3)
+    set r0, 2
+    halt
+    end3:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[0], 2);
+  assert_eq!(foxmulator.state.t[5], 6);
+}
