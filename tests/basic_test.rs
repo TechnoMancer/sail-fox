@@ -152,6 +152,26 @@ fn test_neg() {
 }
 
 #[test]
+fn test_bswap() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.r[0] = 0xcafe;
+  foxmulator.state.r[1] = 0xbeef;
+  foxmulator.run_assembly(r#"
+    block (end)
+    byteswap r2, r0
+    byteswap r1, r1
+    halt
+    end:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[0], 0xcafe);
+  assert_eq!(foxmulator.state.r[1], 0xefbe);
+  assert_eq!(foxmulator.state.r[2], 0xfeca);
+}
+
+#[test]
 fn test_set() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 

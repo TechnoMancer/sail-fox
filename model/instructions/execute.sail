@@ -129,6 +129,14 @@ function clause execute NEG(rd, ra) = {
   RETIRE_SUCCESS
 }
 
+function clause execute BSWAP(rd, ra) = {
+  let v = R(ra);
+  let new_v = v[7 .. 0] @ v[15 .. 8];
+  R(rd) = new_v;
+
+  RETIRE_SUCCESS
+}
+
 function clause execute ADD_S(rd, imm) = { R(rd) = R(rd) + unsigned_extend(16, imm); RETIRE_SUCCESS }
 function clause execute SUB_S(rd, imm) = { R(rd) = R(rd) - unsigned_extend(16, imm); RETIRE_SUCCESS }
 function clause execute AND_S(rd, imm) = { R(rd) = R(rd) & signed_extend(16, imm); RETIRE_SUCCESS }
