@@ -147,8 +147,8 @@ Note: We can probably make a CPU that is useful without supporting any of these 
 | 1100 0001 dddd aaaa iiii iiii iiii 1000 | eq pd, ra, simm
 | 1100 0001 dddd aaaa iiii iiii iiii 1001 | lt.s pd, ra, simm
 | 1100 0001 dddd aaaa iiii iiii iiii 1010 | lt.u pd, ra, simm
-| 1100 0001 dddd aaaa iiii iiii iiii 1011 | reserved
-| 1100 0001 dddd aaaa iiii iiii iiii 1100 | reserved
+| 1100 0001 dddd aaaa iiii iiii iiii 1011 | gt.s pd, ra, simm
+| 1100 0001 dddd aaaa iiii iiii iiii 1100 | gt.u pd, ra, simm
 | 1100 0001 dddd aaaa iiii iiii iiii 1101 | reserved
 | 1100 0001 dddd aaaa iiii iiii iiii 1110 | reserved
 | 1100 0001 dddd aaaa iiii iiii iiii 1111 | reserved
