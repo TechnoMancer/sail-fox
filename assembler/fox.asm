@@ -219,6 +219,14 @@ set {rd: register}, {val: i16} => {
   call {td: target} if {p: predicate} => 0b0000_1011 @ 0b1 @ td`3 @ p`4
 ; short for always branch
   call {td: target} => 0b0000_1011 @ 0b1 @ td`3 @ 0b0111
+; | 0000 1100 dddd aaaa | inc rd, ra
+  inc {rd: register}, {ra: register} => 0b0000_1100 @ rd @ ra
+; alias to add
+  add {rd: register}, {ra: register} => asm { inc {rd}, {ra}}
+; | 0000 1101 dddd aaaa | dec rd, ra
+  dec {rd: register}, {ra: register} => 0b0000_1101 @ rd @ ra
+  ; alias to sub
+  sub {rd: register}, {ra: register} => asm { dec {rd}, {ra}}
 ; | 0001 0000 dddd aaaa | and rd, ra
   and {rd: register}, {ra: register} => 0b0001_0000 @ rd @ra
 ; | 0001 0001 dddd aaaa | or rd, ra
@@ -232,8 +240,6 @@ set {rd: register}, {val: i16} => {
   add {rd: register}, {imm: u4} => 0x10 @ imm @ rd
   sub {rd: register}, {imm: u4} => 0x11 @ imm @ rd
   
-  add {rd: register}, {ra: register} => 0x24 @ ra @ rd
-  sub {rd: register}, {ra: register} => 0x25 @ ra @ rd
   subf {rd: register}, {ra: register} => 0x26 @ ra @ rd
   lt {rd: register}, {ra: register} => 0x2C @ ra @ rd
   lte {rd: register}, {ra: register} => 0x2D @ ra @ rd

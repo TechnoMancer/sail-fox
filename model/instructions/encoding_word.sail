@@ -29,6 +29,11 @@ mapping clause code_single_word = 0b0000 @ 0b1011 @ 0b0 @ td : target_index @ p 
 //| 0000 1011 1ddd pppp | call td (predicated)
 mapping clause code_single_word = 0b0000 @ 0b1011 @ 0b1 @ td : target_index @ p : predicate_encoding <-> (BRANCHL(td), predicate_decode(p))
 
+//| 0000 1100 dddd aaaa | inc rd, ra
+mapping clause code_single_word = forwards 0b0000 @ 0b1100 @ rd : register_index @ ra : register_index => (ADD(rd, rd, ra), Some(Always()))
+//| 0000 1101 dddd aaaa | dec rd, ra
+mapping clause code_single_word = forwards 0b0000 @ 0b1101 @ rd : register_index @ ra : register_index => (SUB(rd, rd, ra), Some(Always()))
+
 //| 0000 1111 0000 0000 | temporary halt.
 mapping clause code_single_word = 0b0000 @ 0b1111 @ 0b0000 @ 0b0000 <-> (HALT(), Some(Always()))
 
@@ -90,8 +95,7 @@ mapping clause code_single_word = 0b0001 @ 0b1111 @ x : bits(8)     <-> (UNALLOC
 
 mapping clause code_single_word = 0b0010 @ 0b0010 @ 0b0 @    pa @  0b0 @   pd <-> (MOVP(pd, pa), Some(Always()))
 mapping clause code_single_word = 0b0010 @ 0b0011 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0100 @ x), Some(Always()))
-mapping clause code_single_word = forwards 0b0010 @ 0b0100 @ ra : register_index @ rd : register_index => (ADD(rd, rd, ra), Some(Always()))
-mapping clause code_single_word = forwards 0b0010 @ 0b0101 @ ra : register_index @ rd : register_index => (SUB(rd, rd, ra), Some(Always()))
+
 mapping clause code_single_word = 0b0010 @ 0b0110 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0110 @ x), Some(Always()))
 mapping clause code_single_word = 0b0010 @ 0b0111 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0111 @ x), Some(Always()))
 
@@ -192,6 +196,12 @@ mapping clause code_single_word = 0b0011 @ 0b1111 @ x : bits(8)     <-> (UNALLOC
 //| 0000 0000 dddd aaaa | mov rd, ra (rd = ra is reserved)
 mapping clause code_single_word = backwards (MOV(rd, ra), Some(Always())) if rd != ra => 0b0000 @ 0b0000 @ rd : register_index @ ra : register_index
 
+//| 0000 1100 dddd aaaa | inc rd, ra
+mapping clause code_single_word = backwards (ADD(rd, ra, rb), Some(Always())) if ra == rd  => 0b0000 @ 0b1100 @ rd @ rb
+//| 0000 1101 dddd aaaa | dec rd, ra
+mapping clause code_single_word = backwards (SUB(rd, ra, rb), Some(Always())) if ra == rd  => 0b0000 @ 0b1101 @ rd @ rb
+
+
 //| 0001 0000 dddd aaaa | and rd, ra
 mapping clause code_single_word = backwards (AND(rd, ra, rb), Some(Always())) if ra == rd  => 0b0001 @ 0b0000 @ rd @ rb
 //| 0001 0001 dddd aaaa | or rd, ra
@@ -201,8 +211,6 @@ mapping clause code_single_word = backwards (XOR(rd, ra, rb), Some(Always())) if
 //| 0001 0011 dddd aaaa | andc rd, ra
 mapping clause code_single_word = backwards (ANDC(rd, ra, rb), Some(Always())) if ra == rd => 0b0001 @ 0b0011 @ rd @ rb
 
-mapping clause code_single_word = backwards (ADD(rd, ra, rb), Some(Always())) if ra == rd  => 0b0010 @ 0b0100 @ rb @ rd
-mapping clause code_single_word = backwards (SUB(rd, ra, rb), Some(Always())) if ra == rd  => 0b0010 @ 0b0101 @ rb @ rd
 
 mapping clause code_single_word = unallocated : bits(16) <-> (UNALLOCATED(unallocated), Some(Always()))
 

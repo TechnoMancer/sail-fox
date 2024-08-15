@@ -21,15 +21,19 @@ fn test_add() {
 
   foxmulator.state.r[0] = 2;
   foxmulator.state.r[1] = 1;
+  foxmulator.state.r[2] = 3;
   foxmulator.run_assembly(r#"
     block (end)
     add r0, r1
+    inc r2, r1
     halt
     end:
   "#);
 
-  assert_eq!(foxmulator.state.r[0], 3);
   assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[0], 3);
+  assert_eq!(foxmulator.state.r[2], 4);
+
 }
 
 #[test]
@@ -38,15 +42,18 @@ fn test_sub() {
 
   foxmulator.state.r[0] = 3;
   foxmulator.state.r[1] = 1;
+  foxmulator.state.r[2] = 4;
   foxmulator.run_assembly(r#"
     block (end)
     sub r0, r1
+    dec r2, r1
     halt
     end:
   "#);
 
-  assert_eq!(foxmulator.state.r[0], 2);
   assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[0], 2);
+  assert_eq!(foxmulator.state.r[2], 3);
 }
 
 #[test]
