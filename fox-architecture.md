@@ -74,16 +74,14 @@ The following CSCs are defined, the there are in theory 256 of them but all of t
 ## Single-word ISA ##
 
 Note: Is a 3-operand add/sub here worth it? It costs one eight of the entire encoding space, I added a 3-op add for now.
-
-| CORE | 0000 0000 dddd aaaa | mov rd, ra (rd = ra is reserved)
-| CORE | 0000 0001 dddd aaaa | not rd, ra
-| CORE | 0000 0010 dddd aaaa | neg rd, ra
+| Extension | Encoding | Operation |
+| --- | ------- | --- |
 | CORE | 0000 0011 dddd aaaa | byteswap rd, ra
 | CMOV | 0000 0100 dddd aaaa | mov rd, ra if p0 (rd = ra is reserved)
 | CMOV | 0000 0101 dddd aaaa | mov rd, ra unless p0 (rd = ra is reserved)
 | CORE | 0000 0110 0ddd aaaa | read rd, ta
 | CORE | 0000 0110 1ddd aaaa | target td, ra
-| CORE | 0000 0111 0ddd aaaa | b td if ra == 0 
+| CORE | 0000 0111 0ddd aaaa | b td if ra == 0
 | CORE | 0000 0111 1ddd aaaa | b td if ra != 0
 | CORE | 0000 1000 dddd aaaa | eq p0, rd, ra
 | CORE | 0000 1001 dddd aaaa | gt.s p0, rd, ra
@@ -160,6 +158,8 @@ Note: Is a 3-operand add/sub here worth it? It costs one eight of the entire enc
 Note: We assume here that only a quarter of the instruction space is reserved for double-word or longer instructions, renumber them to 10 if this is not true in the future.
 Note: We can probably make a CPU that is useful without supporting any of these since they are somewhat synthesisable.
 
+| Extension | Encoding | Operation 
+| --- | ------- | --- 
 | CORE | 1100 0000 dddd aaaa bbbb pppp 0000 0000 | eq pd, ra, rb (predicated)
 | CORE | 1100 0000 dddd aaaa bbbb pppp 0000 0001 | gt.s pd, ra, rb (predicated)
 | CORE | 1100 0000 dddd aaaa bbbb pppp 0000 0010 | gt.u pd, ra, rb (predicated)
