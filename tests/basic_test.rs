@@ -430,50 +430,40 @@ fn test_eq() {
 
   foxmulator.state.r[0] = 0;
   foxmulator.state.r[1] = 1;
+  foxmulator.state.r[2] = 54;
+  foxmulator.state.r[3] = -32i16 as u16;
+  foxmulator.state.r[4] = 0;
+  foxmulator.state.r[5] = 1;
+  foxmulator.state.r[6] = 54;
+  foxmulator.state.r[7] = -32i16 as u16;
   foxmulator.run_assembly(r#"
     test:
-    block (1, .end) eqzt
-    b t0, if r0 eq 0
-    .end:
-    block (eqzt)
-    set r2, 1
-    eqzt:
-    block (1, .end) neqzf
-    set r3, 1
-    b t0, if r0 neq 0
-    .end:
-    block (neqzf)
-    set r4, 1
-    neqzf:
-    block (1, .end) eqzf
-    set r5, 1
-    b t0, if r1 eq 0
-    .end:
-    block (eqzf)
-    set r6, 1
-    eqzf:
-    block (1, .end) neqzt
-    set r7, 1
-    b t0, if r1 neq 0
-    .end:
-    block (neqzt)
-    set r8, 1
-    neqzt:
     block (.end)
+    eq p0, r0, r1
+    mov p1, p0
+    eq p0, r0, r4
+    mov p2, p0
+    eq p0, r2, r6
+    mov p3, p0
+    eq p0, r3, r7
+    mov p4, p0
+    eq p0, r3, r2
+    mov p5, p0
+    eq p0, r1, r5
+    mov p6, p0
+    eq p0, r1, r2
     halt
     .end:
   "#);
 
   assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
-  assert_eq!(foxmulator.state.r[0], 0);
-  assert_eq!(foxmulator.state.r[1], 1);
-  assert_eq!(foxmulator.state.r[2], 0);
-  assert_eq!(foxmulator.state.r[3], 1);
-  assert_eq!(foxmulator.state.r[4], 1);
-  assert_eq!(foxmulator.state.r[5], 1);
-  assert_eq!(foxmulator.state.r[6], 1);
-  assert_eq!(foxmulator.state.r[7], 1);
-  assert_eq!(foxmulator.state.r[8], 0);
+  assert_eq!(foxmulator.state.p[0], false);
+  assert_eq!(foxmulator.state.p[1], false);
+  assert_eq!(foxmulator.state.p[2], true);
+  assert_eq!(foxmulator.state.p[3], true);
+  assert_eq!(foxmulator.state.p[4], true);
+  assert_eq!(foxmulator.state.p[5], false);
+  assert_eq!(foxmulator.state.p[6], true);
 
 }
 
@@ -483,49 +473,36 @@ fn test_lt_gt() {
 
   foxmulator.state.r[0] = 0;
   foxmulator.state.r[1] = 1;
+  foxmulator.state.r[2] = 54;
+  foxmulator.state.r[3] = -32i16 as u16;
+  foxmulator.state.r[4] = -54i16 as u16;
   foxmulator.run_assembly(r#"
     test:
-    block (1, .end) eqzt
-    b t0, if r0 eq 0
-    .end:
-    block (eqzt)
-    set r2, 1
-    eqzt:
-    block (1, .end) neqzf
-    set r3, 1
-    b t0, if r0 neq 0
-    .end:
-    block (neqzf)
-    set r4, 1
-    neqzf:
-    block (1, .end) eqzf
-    set r5, 1
-    b t0, if r1 eq 0
-    .end:
-    block (eqzf)
-    set r6, 1
-    eqzf:
-    block (1, .end) neqzt
-    set r7, 1
-    b t0, if r1 neq 0
-    .end:
-    block (neqzt)
-    set r8, 1
-    neqzt:
     block (.end)
+    gt.s p0, r0, r1
+    mov p1, p0
+    gt.u p0, r0, r1
+    mov p2, p0
+    gt.s p0, r1, r0
+    mov p3, p0
+    gt.u p0, r1, r0
+    mov p4, p0
+    gt.s p0, r3, r4
+    mov p5, p0
+    gt.u p0, r2, r4
+    mov p6, p0
+    gt.s p0, r2, r4
     halt
     .end:
   "#);
 
   assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
-  assert_eq!(foxmulator.state.r[0], 0);
-  assert_eq!(foxmulator.state.r[1], 1);
-  assert_eq!(foxmulator.state.r[2], 0);
-  assert_eq!(foxmulator.state.r[3], 1);
-  assert_eq!(foxmulator.state.r[4], 1);
-  assert_eq!(foxmulator.state.r[5], 1);
-  assert_eq!(foxmulator.state.r[6], 1);
-  assert_eq!(foxmulator.state.r[7], 1);
-  assert_eq!(foxmulator.state.r[8], 0);
+  assert_eq!(foxmulator.state.p[0], true);
+  assert_eq!(foxmulator.state.p[1], false);
+  assert_eq!(foxmulator.state.p[2], false);
+  assert_eq!(foxmulator.state.p[3], true);
+  assert_eq!(foxmulator.state.p[4], true);
+  assert_eq!(foxmulator.state.p[5], true);
+  assert_eq!(foxmulator.state.p[6], false);
 
 }

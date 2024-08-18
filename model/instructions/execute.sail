@@ -78,13 +78,13 @@ function clause execute NEQ_Z(pd, ra) = {
 }
 
 function clause execute EQ(pd, ra, rb) = {
-  P(pd) = (R(ra) <_s R(rb));
+  P(pd) = (R(ra) == R(rb));
 
   RETIRE_SUCCESS
 }
 
 function clause execute NEQ(pd, ra, rb) = {
-  P(pd) = (R(ra) <_s R(rb));
+  P(pd) = (R(ra) != R(rb));
 
   RETIRE_SUCCESS
 }

@@ -217,6 +217,14 @@ set {rd: register}, {val: i16} => {
   b {td: target}, if {ra:register} eq 0 => 0b0000_0111_0 @ td`3 @ ra
 ; | 0000 0111 1ddd aaaa | b td if ra != 0
   b {td: target}, if {ra:register} neq 0 => 0b0000_0111_1 @ td`3 @ ra
+; | 0000 1000 dddd aaaa | eq p0, rd, ra
+  eq p0, {rd: register}, {ra: register} => 0b0000_1000 @ rd @ ra
+; | 0000 1001 dddd aaaa | gt.s p0, rd, ra
+  gt.s p0, {rd: register}, {ra: register} => 0b0000_1001 @ rd @ ra
+  lt.s p0, {rd: register}, {ra: register} => asm{ gt.s p0, {ra}, {rd}}
+; | 0000 1010 dddd aaaa | gt.u p0, rd, ra
+  gt.u p0, {rd: register}, {ra: register} => 0b0000_1010 @ rd @ ra
+  lt.u p0, {rd: register}, {ra: register} => asm{ gt.u p0, {ra}, {rd}}
 ; | 0000 1011 0ddd pppp | b td (predicated)
   b {td: target} if {p: predicate} => {
     assert (p < 0xf, "Cannot use false as a predication")

@@ -29,6 +29,13 @@ mapping clause code_single_word = 0b0000 @ 0b0111 @ 0b0 @ td : target_index @ ra
 //| 0000 0111 1ddd aaaa | b td if ra != 0
 mapping clause code_single_word = 0b0000 @ 0b0111 @ 0b1 @ td : target_index @ ra : register_index <-> (BRANCH_Z(td, ra, true), Some(Always()))
 
+//| 0000 1000 dddd aaaa | eq p0, rd, ra
+mapping clause code_single_word = 0b0000 @ 0b1000 @ rd : register_index @ ra : register_index <-> (EQ(0b000, rd, ra), Some(Always()))
+//| 0000 1001 dddd aaaa | gt.s p0, rd, ra
+mapping clause code_single_word = 0b0000 @ 0b1001 @ rd : register_index @ ra : register_index <-> (LT(0b000, ra, rd), Some(Always()))
+//| 0000 1010 dddd aaaa | gt.u p0, rd, ra
+mapping clause code_single_word = 0b0000 @ 0b1010 @ rd : register_index @ ra : register_index <-> (LTU(0b000, ra, rd), Some(Always()))
+
 //| 0000 1011 0ddd pppp | b td (predicated)
 mapping clause code_single_word = 0b0000 @ 0b1011 @ 0b0 @ td : target_index @ p : predicate_encoding <-> (BRANCH(td), predicated_instruction_decode(p))
 //| 0000 1011 1ddd pppp | call td (predicated)
