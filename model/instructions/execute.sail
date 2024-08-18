@@ -149,7 +149,7 @@ function clause execute ADD_S(rd, imm) = { R(rd) = R(rd) + unsigned_extend(16, i
 function clause execute SUB_S(rd, imm) = { R(rd) = R(rd) - unsigned_extend(16, imm); RETIRE_SUCCESS }
 function clause execute AND_S(rd, imm) = { R(rd) = R(rd) & signed_extend(16, imm); RETIRE_SUCCESS }
 function clause execute SET_S(rd, imm, sign) = {
-    let value = zero_extend(16, imm) + 0x0001;
+    let value = unsigned_extend(16, imm);
     if sign == 0b0 then
       R(rd) = value 
     else
