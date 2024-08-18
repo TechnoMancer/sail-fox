@@ -6,6 +6,8 @@ mapping clause assembly = MOVP(pd, pa) <->  "mov" ^ spc() ^ predicate_name(pd) ^
 mapping clause assembly = ADD(rd, ra, rb) <->  "add" ^ spc() ^ register_name(rd) ^ sep() ^ register_name(ra) ^ sep() ^ register_name(rb)
 mapping clause assembly = SUB(rd, ra, rb) <->  "sub" ^ spc() ^ register_name(rd) ^ sep() ^ register_name(ra) ^ sep() ^ register_name(rb)
 mapping clause assembly = BRANCH(td) <-> "b" ^ spc() ^ target_name(td)
+mapping clause assembly = BRANCH_Z(td, ra, false) <-> "b" ^ spc() ^ target_name(td) ^ sep() ^ "if " ^ register_name(ra) ^ " == 0"
+mapping clause assembly = BRANCH_Z(td, ra, true) <-> "b" ^ spc() ^ target_name(td) ^ sep() ^ "if " ^ register_name(ra) ^ " != 0"
 mapping clause assembly = BLOCK(b, count, None()) <-> "block" ^ spc() ^ "(" ^ hex_bits_2(b) ^ ", #" ^ hex_bits_6(count) ^ ")"
 mapping clause assembly = BLOCK(b, count, Some(imm)) <-> "block" ^ spc() ^ "(" ^ hex_bits_2(b) ^ ", #" ^ hex_bits_6(count) ^ ")" ^ spc() ^ hex_bits_16(imm) 
 mapping clause assembly = BRANCHL(td) <-> "bl" ^ spc() ^ target_name(td)

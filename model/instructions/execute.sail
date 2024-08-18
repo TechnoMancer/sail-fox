@@ -35,6 +35,14 @@ function clause execute BRANCH(td) = {
   RETIRE_SUCCESS
 }
 
+function clause execute BRANCH_Z(td, ra, inv) = {
+  let branch = ((R(ra) == zero_extend(sizeof(register_width), 0x0))) ^ inv;
+  if branch then
+    execute(BRANCH(td))
+  else
+    RETIRE_SUCCESS
+}
+
 function clause execute BLOCK(_, _, _) = {
   RETIRE_FAIL
 }

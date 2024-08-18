@@ -5,6 +5,7 @@ union clause ast = MOVP : (predicate_index, predicate_index)
 union clause ast = ADD : (register_index, register_index, register_index)
 union clause ast = SUB : (register_index, register_index, register_index)
 union clause ast = BRANCH : target_index
+union clause ast = BRANCH_Z : (target_index, register_index, bool)
 union clause ast = BLOCK : (block_branch_count, block_length, option(bits(16)))
 union clause ast = BRANCHL : target_index
 union clause ast = EQ_Z : (predicate_index, register_index)

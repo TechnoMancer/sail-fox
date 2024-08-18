@@ -211,6 +211,10 @@ set {rd: register}, {val: i16} => {
   neg {rd: register}, {ra: register} => 0b0000_0010 @ rd @ ra
 ;  | 0000 0011 dddd aaaa | byteswap rd, ra
   byteswap {rd: register}, {ra: register} => 0b0000_0011 @ rd @ra
+; | 0000 0111 0ddd aaaa | b td if ra == 0
+  b {td: target}, if {ra:register} eq 0 => 0b0000_0111_0 @ td`3 @ ra
+; | 0000 0111 1ddd aaaa | b td if ra != 0
+  b {td: target}, if {ra:register} neq 0 => 0b0000_0111_1 @ td`3 @ ra
 ; | 0000 1011 0ddd pppp | b td (predicated)
   b {td: target} if {p: predicate} => 0b0000_1011 @ 0b0 @ td`3 @ p`4
 ; short for always branch

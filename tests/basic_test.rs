@@ -263,6 +263,59 @@ fn test_b() {
 }
 
 #[test]
+fn test_bz() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.r[0] = 0;
+  foxmulator.state.r[1] = 1;
+  foxmulator.run_assembly(r#"
+    test:
+    block (1, .end) eqzt
+    b t0, if r0 eq 0
+    .end:
+    block (eqzt)
+    set r2, 1
+    eqzt:
+    block (1, .end) neqzf
+    set r3, 1
+    b t0, if r0 neq 0
+    .end:
+    block (neqzf)
+    set r4, 1
+    neqzf:
+    block (1, .end) eqzf
+    set r5, 1
+    b t0, if r1 eq 0
+    .end:
+    block (eqzf)
+    set r6, 1
+    eqzf:
+    block (1, .end) neqzt
+    set r7, 1
+    b t0, if r1 neq 0
+    .end:
+    block (neqzt)
+    set r8, 1
+    neqzt:
+    block (.end)
+    halt
+    .end:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[0], 0);
+  assert_eq!(foxmulator.state.r[1], 1);
+  assert_eq!(foxmulator.state.r[2], 0);
+  assert_eq!(foxmulator.state.r[3], 1);
+  assert_eq!(foxmulator.state.r[4], 1);
+  assert_eq!(foxmulator.state.r[5], 1);
+  assert_eq!(foxmulator.state.r[6], 1);
+  assert_eq!(foxmulator.state.r[7], 1);
+  assert_eq!(foxmulator.state.r[8], 0);
+
+}
+
+#[test]
 fn test_mov() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 
