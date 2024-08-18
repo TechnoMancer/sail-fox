@@ -53,7 +53,7 @@ mapping clause code_single_word = forwards 0b0001 @ 0b0011 @ rd : register_index
 
 //| 0010 0000 dddd iiii | set rd, imm + 1
 //| 0010 0001 dddd iiii | set rd, -(imm + 1)
-mapping clause code_single_word = 0b0010 @ 0b000 @ sign @ rd @     imm <-> (SET_S(rd, imm, sign), Some(Always()))
+mapping clause code_single_word = 0b0010 @ 0b000 @ sign @ rd : register_index @     imm <-> (SET_S(rd, imm, sign), Some(Always()))
 
 //| 0011 1111 bbnn nnnn | block (b = branch count, n = instruction word count - 1)
 mapping clause code_single_word = 0b0011 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), Some(Always()))
