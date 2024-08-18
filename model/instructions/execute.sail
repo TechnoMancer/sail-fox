@@ -47,10 +47,10 @@ function clause execute BLOCK(_, _, _) = {
   RETIRE_FAIL
 }
 
-function clause execute BRANCHL(imm) = {
+function clause execute BRANCHL(td) = {
   T(5) = instruction_address + block_remaining;
 
-  execute(BRANCH(imm))
+  execute(BRANCH(td))
 }
 
 function clause execute EQ_Z(pd, ra) = {
