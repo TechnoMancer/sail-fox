@@ -157,19 +157,19 @@ set {rd: register}, {val: i16} => {
   0b1100_0100 @ rd @ 0b0001 @ val
 }
 
-; | 0010 1111 bbnn nnnn | block (b = branch count, n = instruction word count)
+; | 0011 1111 bbnn nnnn | block (b = branch count, n = instruction word count)
   block ({branches: block_branch_count}, #{words: u7}) => 
-    0b0010_1111 @ branches @ make_block_length(words)`6
+    0b0011_1111 @ branches @ make_block_length(words)`6
 
   ; Block length does not include block insn
   block ({branches: block_branch_count}, {end: block_end_address}) => 
-    0b0010_1111 @ branches @ make_block_length(end - 1)`6
+    0b0011_1111 @ branches @ make_block_length(end - 1)`6
 
   block (#{words: u7}) =>
-    0b0010_1111 @ 0`2 @ make_block_length(words)`6
+    0b0011_1111 @ 0`2 @ make_block_length(words)`6
   ; Block length does not include block insn
   block ({end: block_end_address}) => 
-    0b0010_1111 @ 0`2 @ make_block_length(end - 1)`6
+    0b0011_1111 @ 0`2 @ make_block_length(end - 1)`6
 
 
 ; | 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count), t1 = block + simm << 1
