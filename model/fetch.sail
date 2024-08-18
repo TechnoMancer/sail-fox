@@ -58,6 +58,9 @@ function fetch_and_execute() : unit -> unit =
     });
     let s = string_append(s, ", ");
     let s = string_append(s, predicate_name(predicate));
+    let s = string_append(s, "(");
+    let s = string_append(s, hex_str(unsigned(bool_to_bits(P(predicate)))));
+    let s = string_append(s, ")");
     let s = string_append(s, " == ");
     let s = string_append(s, hex_str(unsigned(expected)));
     print(s);
