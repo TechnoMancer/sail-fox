@@ -60,30 +60,30 @@ mapping predicate_name = {
     0b111 <-> "true",
 }
 
-union instruction_predicate = {
-  Always : unit,
-  Predicate : predicate_index,
-  InversePredicate : predicate_index,
-}
-
-val predication : instruction_predicate <-> string
+val predication : predicate <-> string
 mapping predication = {
   Always() <-> "true",
   Predicate(pr) <-> predicate_name(pr),
-  InversePredicate(0b111) <-> "reserved",
+  InversePredicate(0b111) <-> "false/reserved",
   InversePredicate(pr) <-> "!" ^ predicate_name(pr),
 }
 
 let always : predicate_encoding = 0b0111
 
-val predicate_decode : predicate_encoding <-> option(instruction_predicate)
-mapping predicate_decode = {
+val predicated_instruction_decode : predicate_encoding <-> option(predicate)
+mapping predicated_instruction_decode = {
   0b1 @ 0b111 <-> None(),
   0b0 @ pr : predicate_index <-> Some(Predicate(pr)),
   0b1 @ pr : predicate_index <-> Some(InversePredicate(pr)),
 }
 
-val predicate_interp : instruction_predicate <-> (predicate_index, predicate_type)
+val predicate_read_decode : predicate_encoding <-> predicate
+mapping predicate_read_decode = {
+  0b0 @ pr : predicate_index <-> Predicate(pr),
+  0b1 @ pr : predicate_index <-> InversePredicate(pr),
+}
+
+val predicate_interp : predicate <-> (predicate_index, predicate_type)
 mapping predicate_interp = {
   Always() <-> (0b111, 0b1),
   Predicate(pr) <-> (pr, 0b1),

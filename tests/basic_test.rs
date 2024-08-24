@@ -347,6 +347,34 @@ fn test_mov() {
 }
 
 #[test]
+fn test_movp() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.p[0] = true;
+  foxmulator.state.p[1] = false;
+
+  foxmulator.run_assembly(r#"
+    block (end)
+    mov p2, p0
+    mov p3, p1
+    mov p4, true
+    mov p5, false
+    mov p0, !p7
+    mov p1, p7
+    halt
+    end:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.p[0], false);
+  assert_eq!(foxmulator.state.p[1], true);
+  assert_eq!(foxmulator.state.p[2], true);
+  assert_eq!(foxmulator.state.p[3], false);
+  assert_eq!(foxmulator.state.p[4], true);
+  assert_eq!(foxmulator.state.p[5], false);
+}
+
+#[test]
 fn test_call() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 

@@ -15,6 +15,12 @@ type predicate_index = bits(3)
 type predicate_number ('n : Int), 0 <= 'n < 8 = atom('n)
 type predicate_type = bits(1)
 
+union predicate = {
+  Always : unit,
+  Predicate : predicate_index,
+  InversePredicate : predicate_index,
+}
+
 type target_width = word_width
 type target_index = bits(3)
 type target_number ('n : Int), 0 <= 'n < 8 = atom('n)

@@ -9,7 +9,13 @@ function clause execute MOV(rd, ra) = {
 }
 
 function clause execute MOVP(pd, pa) = {
-  P(pd) = P(pa);
+  let p : bool = match pa {
+    Always() => true,
+    Predicate(pa) => P(pa),
+    InversePredicate(pa) => ~(P(pa)),
+  };
+
+  P(pd) = p;
 
   RETIRE_SUCCESS
 }

@@ -19,7 +19,7 @@ function fetch_and_execute() : unit -> unit =
     let instruction = read_u16_be(zero_extend(32,instruction_address));
     let length = instruction_length(truncateLSB(instruction, 3));
     
-    let (ast, pred) : (ast, option(instruction_predicate)) = match (length) {
+    let (ast, pred) : (ast, option(predicate)) = match (length) {
       SINGLE_WORD => code_single_word(instruction),
       DOUBLE_WORD => {
         let instruction_second_word = read_u16_be(zero_extend(32,instruction_address + 2));
@@ -32,7 +32,7 @@ function fetch_and_execute() : unit -> unit =
       }
     };
 
-    let (predicate, expected) : (predicate_index, predicate_type) = match pred {
+    let (pred_reg, expected) : (predicate_index, predicate_type) = match pred {
       None() => {
         halted = true;
         halt_reason = ERROR;
@@ -57,9 +57,9 @@ function fetch_and_execute() : unit -> unit =
       Some(target) => hex_str(unsigned(target))
     });
     let s = string_append(s, ", ");
-    let s = string_append(s, predicate_name(predicate));
+    let s = string_append(s, predicate_name(pred_reg));
     let s = string_append(s, "(");
-    let s = string_append(s, hex_str(unsigned(bool_to_bits(P(predicate)))));
+    let s = string_append(s, hex_str(unsigned(bool_to_bits(P(pred_reg)))));
     let s = string_append(s, ")");
     let s = string_append(s, " == ");
     let s = string_append(s, hex_str(unsigned(expected)));
@@ -78,7 +78,7 @@ function fetch_and_execute() : unit -> unit =
           halt_reason = BLOCK_ERROR;
         }
       },
-      Some(_) => if P(predicate) == bits_to_bool(expected) then {
+      Some(_) => if P(pred_reg) == bits_to_bool(expected) then {
         match execute(ast) {
           RETIRE_SUCCESS => retire_instruction(),
           RETIRE_FAIL => {

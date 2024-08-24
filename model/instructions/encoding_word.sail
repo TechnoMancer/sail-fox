@@ -7,7 +7,7 @@ function instruction_length (prefix) = {
     }
 }
 
-val code_single_word : word <-> (ast, option(instruction_predicate))
+val code_single_word : word <-> (ast, option(predicate))
 scattered mapping code_single_word
 
 /* Bidirectional Mapping */
@@ -30,9 +30,9 @@ mapping clause code_single_word = 0b0000 @ 0b0111 @ 0b0 @ td : target_index @ ra
 mapping clause code_single_word = 0b0000 @ 0b0111 @ 0b1 @ td : target_index @ ra : register_index <-> (BRANCH_Z(td, ra, true), Some(Always()))
 
 //| 0000 1011 0ddd pppp | b td (predicated)
-mapping clause code_single_word = 0b0000 @ 0b1011 @ 0b0 @ td : target_index @ p : predicate_encoding <-> (BRANCH(td), predicate_decode(p))
+mapping clause code_single_word = 0b0000 @ 0b1011 @ 0b0 @ td : target_index @ p : predicate_encoding <-> (BRANCH(td), predicated_instruction_decode(p))
 //| 0000 1011 1ddd pppp | call td (predicated)
-mapping clause code_single_word = 0b0000 @ 0b1011 @ 0b1 @ td : target_index @ p : predicate_encoding <-> (BRANCHL(td), predicate_decode(p))
+mapping clause code_single_word = 0b0000 @ 0b1011 @ 0b1 @ td : target_index @ p : predicate_encoding <-> (BRANCHL(td), predicated_instruction_decode(p))
 
 //| 0000 1100 dddd aaaa | inc rd, ra
 mapping clause code_single_word = forwards 0b0000 @ 0b1100 @ rd : register_index @ ra : register_index => (ADD(rd, rd, ra), Some(Always()))
@@ -50,6 +50,9 @@ mapping clause code_single_word = forwards 0b0001 @ 0b0001 @ rd : register_index
 mapping clause code_single_word = forwards 0b0001 @ 0b0010 @ rd : register_index @ ra : register_index => (XOR(rd, rd, ra), Some(Always()))
 //| 0001 0011 dddd aaaa | andc rd, ra
 mapping clause code_single_word = forwards 0b0001 @ 0b0011 @ rd : register_index @ ra : register_index => (ANDC(rd, rd, ra), Some(Always()))
+
+//| CORE | 0001 0100 0ddd aaaa | mov pd, pa
+mapping clause code_single_word = 0b0001 @ 0b0100 @ 0b0 @ pd : predicate_index @ pa : predicate_encoding <-> (MOVP(pd, predicate_read_decode(pa)), Some(Always()))
 
 //| 0010 0000 dddd iiii | set rd, imm + 1
 //| 0010 0001 dddd iiii | set rd, -(imm + 1)
@@ -98,7 +101,6 @@ mapping clause code_single_word = 0b0001 @ 0b1101 @ x : bits(8)     <-> (UNALLOC
 mapping clause code_single_word = 0b0001 @ 0b1110 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1110 @ x), Some(Always()))
 mapping clause code_single_word = 0b0001 @ 0b1111 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b1111 @ x), Some(Always()))
 
-mapping clause code_single_word = 0b0010 @ 0b0010 @ 0b0 @    pa @  0b0 @   pd <-> (MOVP(pd, pa), Some(Always()))
 mapping clause code_single_word = 0b0010 @ 0b0011 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0100 @ x), Some(Always()))
 
 mapping clause code_single_word = 0b0010 @ 0b0110 @ x : bits(8)     <-> (UNALLOCATED(0b0010 @ 0b0110 @ x), Some(Always()))
@@ -221,7 +223,7 @@ mapping clause code_single_word = unallocated : bits(16) <-> (UNALLOCATED(unallo
 
 end code_single_word
 
-val code_double_word : doubleword <-> (ast, option(instruction_predicate))
+val code_double_word : doubleword <-> (ast, option(predicate))
 scattered mapping code_double_word
 
 // | 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count - 1), t1 = block + simm << 1

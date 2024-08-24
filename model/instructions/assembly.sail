@@ -2,7 +2,7 @@ val assembly : ast <-> string
 scattered mapping assembly
 
 mapping clause assembly = MOV(rd, ra) <->  "mov" ^ spc() ^ register_name(rd) ^ sep() ^ register_name(ra)
-mapping clause assembly = MOVP(pd, pa) <->  "mov" ^ spc() ^ predicate_name(pd) ^ sep() ^ predicate_name(pa)
+mapping clause assembly = MOVP(pd, pa) <->  "mov" ^ spc() ^ predicate_name(pd) ^ sep() ^ predication(pa)
 mapping clause assembly = ADD(rd, ra, rb) <->  "add" ^ spc() ^ register_name(rd) ^ sep() ^ register_name(ra) ^ sep() ^ register_name(rb)
 mapping clause assembly = SUB(rd, ra, rb) <->  "sub" ^ spc() ^ register_name(rd) ^ sep() ^ register_name(ra) ^ sep() ^ register_name(rb)
 mapping clause assembly = BRANCH(td) <-> "b" ^ spc() ^ target_name(td)
