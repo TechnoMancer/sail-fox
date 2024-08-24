@@ -269,24 +269,5 @@ set {rd: register}, {val: i16} => {
   sub {rd: register}, {imm: u4} => 0x11 @ imm @ rd
   
   subf {rd: register}, {ra: register} => 0x26 @ ra @ rd
-  lt {rd: register}, {ra: register} => 0x2C @ ra @ rd
-  lte {rd: register}, {ra: register} => 0x2D @ ra @ rd
-  lt.u {rd: register}, {ra: register} => 0x2E @ ra @ rd
-  lte.u {rd: register}, {ra: register} => 0x2F @ ra @ rd
-  eq {rd: register}, {ra: register} => 0x30 @ ra @ rd
-  neq {rd: register}, {ra: register} => 0x31 @ ra @ rd
-  
-  eq {rd: register}, 0 => 0x3F @ 0xA @ rd
-  neq {rd: register}, 0 => 0x3F @ 0xB @ rd
-
-  eq {rd: register}, 0 unless p0 => 0x3F @ 0xC @ rd
-  neq {rd: register}, 0 unless p0 => 0x3F @ 0xD @ rd
-  eq {rd: register}, 0 if p0 => 0x3F @ 0xE @ rd
-  neq {rd: register}, 0 if p0 => 0x3F @ 0xF @ rd
-
-;| eq rd, 0 unless p0  | 0011 1111 1100 dddd |                         |        |
-;| neq rd, 0 unless p0 | 0011 1111 1101 dddd |                         |        |
-;| eq rd, 0 if p0      | 0011 1111 1110 dddd |                         |        |
-;| neq rd, 0 if p0     | 0011 1111 1111 dddd |                         |        |
 
 }
