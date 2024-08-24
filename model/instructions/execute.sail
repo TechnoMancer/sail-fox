@@ -20,6 +20,12 @@ function clause execute MOVP(pd, pa) = {
   RETIRE_SUCCESS
 }
 
+function clause execute MOVT(td, ta) = {
+  T(td) = T(ta);
+
+  RETIRE_SUCCESS
+}
+
 function clause execute ADD(rd, ra, rb) = {
   R(rd) = R(ra) + R(rb);
 

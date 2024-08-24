@@ -2,6 +2,7 @@ scattered union ast
 
 union clause ast = MOV : (register_index, register_index)
 union clause ast = MOVP : (predicate_index, predicate)
+union clause ast = MOVT : (target_index, target_index)
 union clause ast = ADD : (register_index, register_index, register_index)
 union clause ast = SUB : (register_index, register_index, register_index)
 union clause ast = BRANCH : target_index

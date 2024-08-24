@@ -254,6 +254,9 @@ set {rd: register}, {val: i16} => {
     0b0001_0100 @ 0b0 @ pd`3 @ pa
   }
 
+; | CORE | 0001 0100 1ddd 0aaa | mov td, ta
+  mov {td: target}, {ta: target} => 0b0001_0100 @ 0b1 @ td`3 @ 0b0 @ ta`3
+
   add {rd: register}, {imm: u4} => 0x10 @ imm @ rd
   sub {rd: register}, {imm: u4} => 0x11 @ imm @ rd
   

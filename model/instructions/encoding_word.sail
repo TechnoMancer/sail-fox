@@ -53,6 +53,8 @@ mapping clause code_single_word = forwards 0b0001 @ 0b0011 @ rd : register_index
 
 //| CORE | 0001 0100 0ddd aaaa | mov pd, pa
 mapping clause code_single_word = 0b0001 @ 0b0100 @ 0b0 @ pd : predicate_index @ pa : predicate_encoding <-> (MOVP(pd, predicate_read_decode(pa)), Some(Always()))
+//| CORE | 0001 0100 1ddd aaaa | mov td, ta
+mapping clause code_single_word = 0b0001 @ 0b0100 @ 0b1 @ td : target_index @ 0b0 @ ta: target_index <-> (MOVT(td, ta), Some(Always()))
 
 //| 0010 0000 dddd iiii | set rd, imm + 1
 //| 0010 0001 dddd iiii | set rd, -(imm + 1)
