@@ -67,6 +67,11 @@ mapping clause code_single_word = 0b0001 @ 0b0100 @ 0b1 @ td : target_index @ 0b
 //| 0010 0001 dddd iiii | set rd, -(imm + 1)
 mapping clause code_single_word = 0b0010 @ 0b000 @ sign @ rd : register_index @     imm <-> (SET_S(rd, imm, sign), Some(Always()))
 
+//| 0010 0010 dddd iiii | inc rd, imm + 1
+mapping clause code_single_word = 0b0010 @ 0b0010 @ rd :register_index @ imm <-> (ADD_S(rd, imm), Some(Always()))
+//| 0010 0011 dddd iiii | dec rd, imm + 1
+mapping clause code_single_word = 0b0010 @ 0b0011 @ rd :register_index @ imm <-> (SUB_S(rd, imm), Some(Always()))
+
 //| 0011 1111 bbnn nnnn | block (b = branch count, n = instruction word count - 1)
 mapping clause code_single_word = 0b0011 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), Some(Always()))
 
@@ -78,8 +83,6 @@ mapping clause code_single_word = 0b0011 @ 0b1111 @ b : block_branch_count @ n :
 */
 mapping clause code_single_word = 0b0000 @ 0b0000 @ x : bits(8)     <-> (UNALLOCATED(0b0000 @ 0b0000 @ x), Some(Always()))
 
-mapping clause code_single_word = 0b0001 @ 0b0000 @ imm    @ rd     <-> (ADD_S(rd, imm), Some(Always()))
-mapping clause code_single_word = 0b0001 @ 0b0001 @ imm    @ rd     <-> (SUB_S(rd, imm), Some(Always()))
 mapping clause code_single_word = 0b0001 @ 0b0010 @ imm    @ rd     <-> (AND_S(rd, imm), Some(Always()))
 mapping clause code_single_word = 0b0001 @ 0b0011 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0011 @ x), Some(Always()))
 mapping clause code_single_word = 0b0001 @ 0b0100 @ x : bits(8)     <-> (UNALLOCATED(0b0001 @ 0b0100 @ x), Some(Always()))

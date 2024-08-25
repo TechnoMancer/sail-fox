@@ -506,3 +506,32 @@ fn test_lt_gt() {
   assert_eq!(foxmulator.state.p[6], false);
 
 }
+
+#[test]
+fn test_inc_dec() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.run_assembly(r#"
+    test:
+    block (.end)
+    inc r0, 1
+    dec r1, 5
+    inc r2, 16
+    dec r3, 16
+    inc r4, 6
+    dec r4, 4
+    inc r5, 10
+    dec r5, 16
+    halt
+    .end:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[0], 1);
+  assert_eq!(foxmulator.state.r[1], -5_i16 as u16);
+  assert_eq!(foxmulator.state.r[2], 16);
+  assert_eq!(foxmulator.state.r[3], -16_i16 as u16);
+  assert_eq!(foxmulator.state.r[4], 2);
+  assert_eq!(foxmulator.state.r[5], -6_i16 as u16);
+
+}

@@ -265,8 +265,34 @@ set {rd: register}, {val: i16} => {
 ; | CORE | 0001 0100 1ddd 0aaa | mov td, ta
   mov {td: target}, {ta: target} => 0b0001_0100 @ 0b1 @ td`3 @ 0b0 @ ta`3
 
-  add {rd: register}, {imm: u4} => 0x10 @ imm @ rd
-  sub {rd: register}, {imm: u4} => 0x11 @ imm @ rd
+; | 0010 0010 dddd iiii | inc rd, imm + 1
+  inc {rd: register}, {val: u5} => {
+    assert(val <= 16, "Immediate to big for increment")
+    assert(val > 0, "Cannot increment by 0")
+    imm = val - 1
+    0b0010_0010 @ rd @ imm`4
+  }
+; | 0010 0011 dddd iiii | dec rd, imm + 1
+  dec {rd: register}, {val: u5} => {
+    assert(val <= 16, "Immediate to big for increment")
+    assert(val > 0, "Cannot increment by 0")
+    imm = val - 1
+    0b0010_0011 @ rd @ imm`4
+  }
+; | 0010 0100 dddd iiii | inc rd, imm + 1 if p0
+  inc {rd: register}, {val: u5} if p0 => {
+    assert(val <= 16, "Immediate to big for increment")
+    assert(val > 0, "Cannot increment by 0")
+    imm = val - 1
+    0b0010_0100 @ rd @ imm`4
+  }
+; | 0010 0101 dddd iiii | dec rd, imm + 1 if p0
+  dec {rd: register}, {val: u5} if p0 => {
+    assert(val <= 16, "Immediate to big for increment")
+    assert(val > 0, "Cannot increment by 0")
+    imm = val - 1
+    0b0010_0101 @ rd @ imm`4
+  }
   
   subf {rd: register}, {ra: register} => 0x26 @ ra @ rd
 
