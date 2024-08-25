@@ -415,6 +415,7 @@ fn test_call() {
     test:
     block (end3)
     set r0, 2
+    set r1, end
     halt
     end3:
   "#);
@@ -422,6 +423,7 @@ fn test_call() {
   assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
   assert_eq!(foxmulator.state.r[0], 2);
   assert_eq!(foxmulator.state.t[5], 6);
+  assert_eq!(foxmulator.state.t[5], foxmulator.state.r[1]);
 }
 
 #[test]
