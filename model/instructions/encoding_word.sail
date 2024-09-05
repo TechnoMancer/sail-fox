@@ -192,11 +192,11 @@ end code_single_word
 val code_double_word : doubleword <-> (ast, option(predicate))
 scattered mapping code_double_word
 
-// | 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count - 1), t1 = block + simm << 1
-mapping clause code_double_word = 0b1100 @ 0b0010 @ b : block_branch_count @ n : block_length @ imm <-> (BLOCK(b, n, Some(imm)), Some(Always()))
+// | CORE | 1100 1101 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count - 1), t0 = block + simm << 1
+mapping clause code_double_word = 0b1100 @ 0b1101 @ b : block_branch_count @ n : block_length @ imm <-> (BLOCK(b, n, Some(imm)), Some(Always()))
 
-// | 1100 0100 dddd 0001 iiii iiii iiii iiii | set rd, simm
-mapping clause code_double_word = 0b1100 @ 0b0100 @ rd @ 0b0001 @ imm <-> (SET_W(rd, imm), Some(Always()))
+// | CORE | 1100 1111 dddd 0001 iiii iiii iiii iiii | set rd, simm
+mapping clause code_double_word = 0b1100 @ 0b1111 @ rd @ 0b0001 @ imm <-> (SET_W(rd, imm), Some(Always()))
 
 mapping clause code_double_word = unallocated : bits(32) <-> (UNALLOCATED2(unallocated), Some(Always()))
 

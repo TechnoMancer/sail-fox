@@ -142,7 +142,7 @@
 
 ; | 0010 0000 dddd iiii | set rd, imm + 1
 ; | 0010 0001 dddd iiii | set rd, -(imm + 1)
-; | 1100 0100 dddd 0001 iiii iiii iiii iiii | set rd, simm
+; | CORE | 1100 1111 dddd 0001 iiii iiii iiii iiii | set rd, simm
 ; Synthetic composite set instruction to set a register to an immediate however it can, 0 is set by way of xor
 set {rd: register}, 0 => asm { xor {rd}, {rd} }
 set {rd: register}, {val: s6} => {
@@ -156,7 +156,7 @@ set {rd: register}, {val: s5} => {
   0b0010_0001 @ rd @ ((-val) - 1)`4
 }
 set {rd: register}, {val: i16} => {
-  0b1100_0100 @ rd @ 0b0001 @ val
+  0b1100_1111 @ rd @ 0b0001 @ val
 }
 
 ; | 0011 1111 bbnn nnnn | block (b = branch count, n = instruction word count)
@@ -174,28 +174,28 @@ set {rd: register}, {val: i16} => {
     0b0011_1111 @ 0`2 @ make_block_length(end - 1)`6
 
 
-; | 1100 0010 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count), t1 = block + simm << 1
+; | CORE | 1100 1101 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count - 1), t0 = block + simm << 1
   block ({branches: block_branch_count}, #{words: u7}) {target: medium_relative_address} => {
     offset = asm {targ_helper {target}, $, $+({words}<<1)}
-    0b1100_0010 @ branches @ make_block_length(words) @ offset`16
+    0b1100_1101 @ branches @ make_block_length(words) @ offset`16
   }
   ; Block lenght does not include block insn
   block ({branches: block_branch_count}, {end: block_end_address}) {target: medium_relative_address} => {
     offset = asm {targ_helper {target}, $, {end}}
-    0b1100_0010 @ branches @ make_block_length(end - 2)`6 @ offset`16
+    0b1100_1101 @ branches @ make_block_length(end - 2)`6 @ offset`16
   }
 
   block (#{words: u7}) {target} => {
     offset = asm {targ_helper {target}, $, $+({words}<<1)}
     ;assert(offset < 65535, "Block target too far")
     ;assert(offset > -32768, "Block target too far")
-    0b1100_0010 @ 0`2 @ make_block_length(words) @ offset`16
+    0b1100_1101 @ 0`2 @ make_block_length(words) @ offset`16
   }
   ; Block lenght does not include block insn
   block ({end: block_end_address}) {target} => {
     offset = asm {targ_helper {target}, $, {end}}
     ;assert(offset < 65535, "Block target too far")
-    0b1100_0010 @ 0`2 @ make_block_length(end - 2)`6 @ offset`16
+    0b1100_1101 @ 0`2 @ make_block_length(end - 2)`6 @ offset`16
   }
 
 ; Single Word ISA
