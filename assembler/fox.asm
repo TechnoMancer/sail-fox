@@ -293,7 +293,5 @@ set {rd: register}, {val: i16} => {
     imm = val - 1
     0b0010_0101 @ rd @ imm`4
   }
-  
-  subf {rd: register}, {ra: register} => 0x26 @ ra @ rd
 
 }
