@@ -7,7 +7,6 @@ $include <string.sail>
 $include <vector_dec.sail>
 $include <regfp.sail>
 
-val dec_str = pure "dec_str" : int -> string
 val hex_str = pure "hex_str" : int -> string
 val print = pure "print_endline" : string -> unit
 
