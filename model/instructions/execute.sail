@@ -170,6 +170,29 @@ function clause execute SET_S(rd, imm, sign) = {
   }
 function clause execute SET_W(rd, imm) = { R(rd) = imm; RETIRE_SUCCESS }
 
+// Memory Operations
+
+function clause execute LOAD_W(rd, ra, imm) = {
+  let address = R(ra) + (sign_extend(16, imm) << 1);
+
+  let value = read_u16_be(zero_extend(32, address));
+
+  R(rd) = value;
+
+  RETIRE_SUCCESS
+}
+
+function clause execute STORE_W(rd, ra, imm) = {
+  let address = R(ra) + (sign_extend(16, imm) << 1);
+
+  let value = R(rd);
+
+  write_u16_be(zero_extend(32, address), value);
+
+  RETIRE_SUCCESS
+}
+
+
 function clause execute HALT() = { 
   halted = true; 
   halt_reason = HALT_INSN;

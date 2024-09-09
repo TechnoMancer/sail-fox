@@ -248,3 +248,5 @@ function hex_bits_32_backwards s =
 
 val read_u8_be = monadic { c: "read_u8_be" } : bits(32) -> bits(8)
 val read_u16_be = monadic { c: "read_u16_be" } : bits(32) -> bits(16)
+
+val write_u16_be = monadic { c: "write_u16_be" } : (bits(32), bits(16)) -> unit

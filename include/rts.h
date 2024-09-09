@@ -11,6 +11,8 @@ unit sail_exit(unit);
 fbits read_u8_be(fbits);
 fbits read_u16_be(fbits);
 
+unit write_u16_be(fbits, fbits);
+
 /* State builtins */
 
 fbits read_ia(unit);

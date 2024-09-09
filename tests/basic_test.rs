@@ -537,3 +537,78 @@ fn test_inc_dec() {
   assert_eq!(foxmulator.state.r[5], -6_i16 as u16);
 
 }
+
+#[test]
+fn test_read_word() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.run_assembly(r#"
+    test:
+    block (.end)
+    set r0, data1
+    set r1, data2
+
+    ld.w r2, r0[0]
+    ld.w r3, r0[1]
+    ld.w r4, r1[0]
+    ld.w r5, r1[1]
+    ld.w r6, r1[-1]
+
+    halt
+    .end:
+
+    data1:
+    #d16 0xcafe, 0xbabe
+    data2:
+    #d16 0xbeef, 0xdead
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[2], 0xcafe);
+  assert_eq!(foxmulator.state.r[3], 0xbabe);
+  assert_eq!(foxmulator.state.r[4], 0xbeef);
+  assert_eq!(foxmulator.state.r[5], 0xdead);
+  assert_eq!(foxmulator.state.r[6], 0xbabe);
+
+}
+
+#[test]
+fn test_write_word() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.run_assembly(r#"
+    test:
+    block (.end)
+    set r0, data1
+    set r1, data2
+    set r2, 0xcafe
+    set r3, 0xbabe
+    set r4, 0xbeef
+    set r5, 0xdead
+
+    st.w r2, r0[0]
+    st.w r3, r1[0]
+    st.w r4, r1[1]
+    st.w r5, r1[-1]
+
+    ld.w r6, r0[0]
+    ld.w r7, r0[1]
+    ld.w r8, r0[2]
+    ld.w r9, r0[3]
+
+    halt
+    .end:
+
+    data1:
+    #d16 0, 0
+    data2:
+    #d16 0, 0
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[6], 0xcafe);
+  assert_eq!(foxmulator.state.r[7], 0xdead);
+  assert_eq!(foxmulator.state.r[8], 0xbabe);
+  assert_eq!(foxmulator.state.r[9], 0xbeef);
+
+}

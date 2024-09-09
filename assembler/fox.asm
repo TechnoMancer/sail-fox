@@ -294,4 +294,13 @@ set {rd: register}, {val: i16} => {
     0b0010_0101 @ rd @ imm`4
   }
 
+; | CORE | 1000 iiii dddd aaaa | load rd, ra[imm] (relative to c0)
+  ld.w {rd: register}, {ra:register}[{imm:s4}] => {
+    0b1000 @ imm @ rd @ ra
+  }
+; | CORE | 1001 iiii dddd aaaa | store rd, ra[imm] (relative to c0)
+  st.w {rd: register}, {ra:register}[{imm:s4}] => {
+  0b1001 @ imm @ rd @ ra
+  }
+
 }

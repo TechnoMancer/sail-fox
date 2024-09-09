@@ -2,6 +2,7 @@ val instruction_length : bits(3) -> instructionLength
 function instruction_length (prefix) = {
     match (prefix) {
         0b0 @ _ => SINGLE_WORD,
+        0b10 @ _ => SINGLE_WORD,
         0b11 @ _ => DOUBLE_WORD,
         _ => NOT_ALLOCATED,
     }
@@ -74,6 +75,11 @@ mapping clause code_single_word = 0b0010 @ 0b0011 @ rd :register_index @ imm <->
 
 //| 0011 1111 bbnn nnnn | block (b = branch count, n = instruction word count - 1)
 mapping clause code_single_word = 0b0011 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), Some(Always()))
+
+//| CORE | 1000 iiii dddd aaaa | load rd, ra[imm] (relative to c0)
+mapping clause code_single_word = 0b1000 @ imm @ rd : register_index @ ra : register_index <-> (LOAD_W(rd, ra, imm), Some(Always()))
+//| CORE | 1001 iiii dddd aaaa | store rd, ra[imm] (relative to c0)
+mapping clause code_single_word = 0b1001 @ imm @ rd : register_index @ ra : register_index <-> (STORE_W(rd, ra, imm), Some(Always()))
 
 /* Backwards Mapping */
 
