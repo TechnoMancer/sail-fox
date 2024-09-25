@@ -28,6 +28,8 @@ fn main() {
 
   println!("cargo:rerun-if-changed=model/fox.sail_project");
 
+  println!("cargo:rerun-if-changed=include/rts.h");
+
   let sail = Command::new("sail")
     .arg("--no-memo-z3")
     .arg("-c")
