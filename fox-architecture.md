@@ -61,7 +61,7 @@ There are 8 branch target registers named `t0` to `t7` that are used to both com
 The following CSRs are defined, the there are in theory 256 of them but all of the other ones should fail. 
 
  - `csr[0]` or `status` is a status register. At reset its value is undefined.
- - `csr[1]` or `sp` is the stack pointer. At reset its value is undefined.
+ - `csr[1]` or `sp` is the stack pointer. At reset its value is undefined. The stack grows upward.
 
 
 ### CSCs ###
@@ -111,8 +111,8 @@ Note: Is a 3-operand add/sub here worth it? It costs one eight of the entire enc
 |      | 0001 1100 xxxx xxxx | reserved
 |      | 0001 1101 xxxx xxxx | reserved
 |      | 0001 1110 xxxx xxxx | reserved
-| SP   | 0001 1111 00ii iiii | allocate imm (sp -= imm)
-| SP   | 0001 1111 01ii iiii | deallocate imm (sp += imm)
+| SP   | 0001 1111 00ii iiii | allocate imm (sp += imm)
+| SP   | 0001 1111 01ii iiii | deallocate imm (sp -= imm)
 |      | 0001 1111 10ii iiii | reserved
 |      | 0001 1111 11ii iiii | reserved
 | CORE | 0010 0000 dddd iiii | set rd, imm + 1
