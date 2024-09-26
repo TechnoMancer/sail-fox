@@ -109,6 +109,11 @@ end code_single_word
 val code_double_word : doubleword <-> (ast, option(predicate))
 scattered mapping code_double_word
 
+// | CORE | 1100 0000 dddd iiii iiii 0111 1111 1100 | read rd, csr[imm]
+mapping clause code_double_word = 0b1100 @ 0b0000 @ rd :register_index @ imm : bits(8) @ 0b0111 @ 0b1111 @ 0b1100 <-> (CSR_READ(rd, imm), Some(Always()))
+// | CORE | 1100 0000 dddd iiii iiii 0111 1111 1101 | write rd, csr[imm]
+mapping clause code_double_word = 0b1100 @ 0b0000 @ rd :register_index @ imm : bits(8) @ 0b0111 @ 0b1111 @ 0b1101 <-> (CSR_WRITE(rd, imm), Some(Always()))
+
 // | CORE | 1100 1101 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count - 1), t0 = block + simm << 1
 mapping clause code_double_word = 0b1100 @ 0b1101 @ b : block_branch_count @ n : block_length @ imm <-> (BLOCK(b, n, Some(imm)), Some(Always()))
 

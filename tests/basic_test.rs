@@ -612,3 +612,30 @@ fn test_write_word() {
   assert_eq!(foxmulator.state.r[9], 0xbeef);
 
 }
+
+#[test]
+fn test_csr_sp() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.r[0] = 0x1;
+  foxmulator.state.r[1] = 0xffff;
+  foxmulator.state.r[2] = 0xbeef;
+
+  foxmulator.run_assembly(r#"
+    test:
+    block (.end)
+    write r0, csr[sp]
+    read r4, csr[1]
+    write r1, csr[0x1]
+    read r5, csr[sp]
+    write r2, csr[0b1]
+    read r6, csr[1]
+    halt
+    .end:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[4], 0x1);
+  assert_eq!(foxmulator.state.r[5], 0xffff);
+  assert_eq!(foxmulator.state.r[6], 0xbeef);
+}

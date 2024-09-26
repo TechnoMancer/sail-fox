@@ -60,6 +60,11 @@
   current => 0x7
 }
 
+#subruledef csr {
+  status => 0x0
+  sp => 0x1
+}
+
 #subruledef short_relative_address {
 	{address: u16} => {
     assert(address % 2 == 0)
@@ -301,6 +306,21 @@ set {rd: register}, {val: i16} => {
 ; | CORE | 1001 iiii dddd aaaa | store rd, ra[imm] (relative to c0)
   st.w {rd: register}, {ra:register}[{imm:s4}] => {
   0b1001 @ imm @ rd @ ra
+  }
+
+; | CORE | 1100 0000 dddd iiii iiii 0111 1111 1100 | read rd, csr[imm]
+  read {rd: register}, csr[{imm:csr}] => {
+    0b1100_0000 @ rd`4 @ imm`8 @ 0b0111_1111_1100
+  }
+  read {rd: register}, csr[{imm:u8}] => {
+    0b1100_0000 @ rd`4 @ imm`8 @ 0b0111_1111_1100
+  }
+; | CORE | 1100 0000 dddd iiii iiii 0111 1111 1101 | write rd, csr[imm]
+  write {rd: register}, csr[{imm:csr}] => {
+    0b1100_0000 @ rd`4 @ imm`8 @ 0b0111_1111_1101
+  }
+  write {rd: register}, csr[{imm:u8}] => {
+    0b1100_0000 @ rd`4 @ imm`8 @ 0b0111_1111_1101
   }
 
 }

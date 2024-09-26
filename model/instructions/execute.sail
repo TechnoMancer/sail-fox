@@ -192,6 +192,20 @@ function clause execute STORE_W(rd, ra, imm) = {
   RETIRE_SUCCESS
 }
 
+function clause execute CSR_READ(rd, csr) = {
+  match csr {
+    0x01 => {R(rd) = stack_pointer; RETIRE_SUCCESS},
+    _ => RETIRE_FAIL,
+  }
+}
+
+function clause execute CSR_WRITE(rd, csr) = {
+  match csr {
+    0x01 => {stack_pointer = R(rd); RETIRE_SUCCESS},
+    _ => RETIRE_FAIL,
+  }
+}
+
 
 function clause execute HALT() = { 
   halted = true; 
