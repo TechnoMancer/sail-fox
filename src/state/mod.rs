@@ -5,6 +5,7 @@ pub struct State {
   pub p: [bool; 7],
   pub t: [u16; 8],
   pub halt_reason: HaltReason,
+  pub sp: usize,
 }
 
 impl State {
@@ -15,6 +16,7 @@ impl State {
       p: [true; 7],
       t: [0; 8],
       halt_reason: HaltReason::Unknown,
+      sp: usize::MAX,
     }
   }
 }

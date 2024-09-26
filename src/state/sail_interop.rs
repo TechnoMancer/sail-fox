@@ -41,6 +41,16 @@ pub unsafe extern "C" fn write_halt_reason(value: sail::fbits) {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn read_stack_pointer() -> sail::fbits {
+  return STATE.sp as sail::fbits;
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn write_stack_pointer(value: sail::fbits) {
+  return STATE.sp = value as usize;
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn read_register(n: sail::fbits) -> sail::fbits {
   println!("Reading r{}", n);
   return STATE.r[n as usize] as sail::fbits;

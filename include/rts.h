@@ -17,12 +17,14 @@ unit write_u16_be(fbits, fbits);
 
 fbits read_ia(unit);
 fbits read_halt_reason(unit);
+fbits read_stack_pointer(unit);
 fbits read_register(fbits);
 fbits read_predicate(fbits);
 fbits read_target(fbits);
 
 unit write_ia(fbits);
 unit write_halt_reason(fbits);
+unit write_stack_pointer(fbits);
 unit write_register(fbits, fbits);
 unit write_predicate(fbits, bool);
 unit write_target(fbits, fbits);
