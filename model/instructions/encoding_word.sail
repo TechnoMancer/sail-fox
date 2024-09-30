@@ -25,6 +25,11 @@ mapping clause code_single_word = 0b0000 @ 0b0010 @ rd : register_index @ ra : r
 // | 0000 0011 dddd aaaa | byteswap rd, ra
 mapping clause code_single_word = 0b0000 @ 0b0011 @ rd : register_index @ ra : register_index <-> (BSWAP(rd, ra), Some(Always()))
 
+// | CMOV | 0000 0100 dddd aaaa | mov rd, ra if p0 (rd = ra is reserved)
+mapping clause code_single_word = forwards 0b0000 @ 0b0100 @ rd : register_index @ ra : register_index if ra != rd => (MOV(rd, ra), Some(Predicate(0b000)))
+// | CMOV | 0000 0101 dddd aaaa | mov rd, ra unless p0 (rd = ra is reserved)
+mapping clause code_single_word = forwards 0b0000 @ 0b0101 @ rd : register_index @ ra : register_index if ra != rd => (MOV(rd, ra), Some(InversePredicate(0b000)))
+
 //| 0000 0111 0ddd aaaa | b td if ra == 0
 mapping clause code_single_word = 0b0000 @ 0b0111 @ 0b0 @ td : target_index @ ra : register_index <-> (BRANCH_Z(td, ra, false), Some(Always()))
 //| 0000 0111 1ddd aaaa | b td if ra != 0
@@ -85,6 +90,11 @@ mapping clause code_single_word = 0b1001 @ imm @ rd : register_index @ ra : regi
 
 //| 0000 0000 dddd aaaa | mov rd, ra (rd = ra is reserved)
 mapping clause code_single_word = backwards (MOV(rd, ra), Some(Always())) if rd != ra => 0b0000 @ 0b0000 @ rd : register_index @ ra : register_index
+
+// | CMOV | 0000 0100 dddd aaaa | mov rd, ra if p0 (rd = ra is reserved)
+mapping clause code_single_word = backwards (MOV(rd, ra), Some(Predicate(0b000))) if ra != rd => 0b0000 @ 0b0100 @ rd : register_index @ ra : register_index
+// | CMOV | 0000 0101 dddd aaaa | mov rd, ra unless p0 (rd = ra is reserved)
+mapping clause code_single_word = backwards (MOV(rd, ra), Some(InversePredicate(0b000))) if ra != rd => 0b0000 @ 0b0100 @ rd : register_index @ ra : register_index
 
 //| 0000 1100 dddd aaaa | inc rd, ra
 mapping clause code_single_word = backwards (ADD(rd, ra, rb), Some(Always())) if ra == rd  => 0b0000 @ 0b1100 @ rd @ rb

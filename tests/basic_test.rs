@@ -401,6 +401,45 @@ fn test_movt() {
 }
 
 #[test]
+fn test_cmov() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.r[0] = 0xcafe;
+  foxmulator.state.r[1] = 0xbeef;
+
+  foxmulator.run_assembly(r#"
+    block (end)
+    mov p0, true
+    mov r2, r0 if p0
+    mov r3, r0 if !p0
+    mov r4, r1 if !p0
+    mov r5, r1 if p0
+    mov p1, p0
+    mov p0, false
+    mov r6, r0 if p0
+    mov r7, r0 if !p0
+    mov r8, r1 if !p0
+    mov r9, r1 if p0
+    halt
+    end:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[0], 0xcafe);
+  assert_eq!(foxmulator.state.r[1], 0xbeef);
+  assert_eq!(foxmulator.state.r[2], 0xcafe);
+  assert_eq!(foxmulator.state.r[3], 0);
+  assert_eq!(foxmulator.state.r[4], 0);
+  assert_eq!(foxmulator.state.r[5], 0xbeef);
+  assert_eq!(foxmulator.state.r[6], 0);
+  assert_eq!(foxmulator.state.r[7], 0xcafe);
+  assert_eq!(foxmulator.state.r[8], 0xbeef);
+  assert_eq!(foxmulator.state.r[9], 0);
+  assert_eq!(foxmulator.state.p[0], false);
+  assert_eq!(foxmulator.state.p[1], true);
+}
+
+#[test]
 fn test_call() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 

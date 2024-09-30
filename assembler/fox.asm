@@ -218,6 +218,18 @@ set {rd: register}, {val: i16} => {
   neg {rd: register}, {ra: register} => 0b0000_0010 @ rd @ ra
 ;  | 0000 0011 dddd aaaa | byteswap rd, ra
   byteswap {rd: register}, {ra: register} => 0b0000_0011 @ rd @ra
+
+; | CMOV | 0000 0100 dddd aaaa | mov rd, ra if p0 (rd = ra is reserved)
+  mov {rd: register}, {ra: register} if p0 => {
+    assert(rd != ra, "Mov to self is forbidden")
+    0b0000_0100 @ rd @ ra
+  }
+; | CMOV | 0000 0101 dddd aaaa | mov rd, ra unless p0 (rd = ra is reserved)
+  mov {rd: register}, {ra: register} if !p0 => {
+    assert(rd != ra, "Mov to self is forbidden")
+    0b0000_0101 @ rd @ ra
+  }
+
 ; | 0000 0111 0ddd aaaa | b td if ra == 0
   b {td: target}, if {ra:register} eq 0 => 0b0000_0111_0 @ td`3 @ ra
 ; | 0000 0111 1ddd aaaa | b td if ra != 0
