@@ -78,6 +78,11 @@ mapping clause code_single_word = 0b0010 @ 0b0010 @ rd :register_index @ imm <->
 //| 0010 0011 dddd iiii | dec rd, imm + 1
 mapping clause code_single_word = 0b0010 @ 0b0011 @ rd :register_index @ imm <-> (SUB_S(rd, imm), Some(Always()))
 
+// | CMOV | 0010 0100 dddd iiii | inc rd, imm + 1 if p0
+mapping clause code_single_word = 0b0010 @ 0b0100 @ rd :register_index @ imm <-> (ADD_S(rd, imm), Some(Predicate(0b000)))
+// | CMOV | 0010 0101 dddd iiii | dec rd, imm + 1 if p0
+mapping clause code_single_word = 0b0010 @ 0b0101 @ rd :register_index @ imm <-> (SUB_S(rd, imm), Some(Predicate(0b000)))
+
 //| 0011 1111 bbnn nnnn | block (b = branch count, n = instruction word count - 1)
 mapping clause code_single_word = 0b0011 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), Some(Always()))
 

@@ -578,6 +578,51 @@ fn test_inc_dec() {
 }
 
 #[test]
+fn test_inc_dec_cond() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.run_assembly(r#"
+    test:
+    block (.end)
+    mov p0, true
+    inc r0, 1 if p0
+    dec r1, 5 if p0
+    inc r2, 16 if p0
+    dec r3, 16 if p0
+    inc r4, 6 if p0
+    dec r4, 4 if p0
+    inc r5, 10 if p0
+    dec r5, 16 if p0
+    mov p0, false
+    inc r6, 1 if p0
+    dec r7, 5 if p0
+    inc r8, 16 if p0
+    dec r9, 16 if p0
+    inc r10, 6 if p0
+    dec r10, 4 if p0
+    inc r11, 10 if p0
+    dec r11, 16 if p0
+    halt
+    .end:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[0], 1);
+  assert_eq!(foxmulator.state.r[1], -5_i16 as u16);
+  assert_eq!(foxmulator.state.r[2], 16);
+  assert_eq!(foxmulator.state.r[3], -16_i16 as u16);
+  assert_eq!(foxmulator.state.r[4], 2);
+  assert_eq!(foxmulator.state.r[5], -6_i16 as u16);
+  assert_eq!(foxmulator.state.r[6], 0);
+  assert_eq!(foxmulator.state.r[7], 0);
+  assert_eq!(foxmulator.state.r[8], 0);
+  assert_eq!(foxmulator.state.r[9], 0);
+  assert_eq!(foxmulator.state.r[10], 0);
+  assert_eq!(foxmulator.state.r[11], 0);
+
+}
+
+#[test]
 fn test_read_word() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 
