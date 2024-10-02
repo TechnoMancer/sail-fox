@@ -37,6 +37,38 @@ fn test_add() {
 }
 
 #[test]
+fn test_add_3op() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.r[0] = 2;
+  foxmulator.state.r[1] = 1;
+  foxmulator.state.r[2] = 3;
+  foxmulator.state.r[3] = -3_i16 as u16;
+  foxmulator.run_assembly(r#"
+    block (end)
+    add r4, r0, r1
+    add r0, r0, r1
+    add r5, r2, r1
+    add r6, r0, r2
+    add r7, r3, r2
+    add r8, r1, r3
+    add r9, r0, r3
+    halt
+    end:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.r[0], 3);
+  assert_eq!(foxmulator.state.r[4], 3);
+  assert_eq!(foxmulator.state.r[5], 4);
+  assert_eq!(foxmulator.state.r[6], 6);
+  assert_eq!(foxmulator.state.r[7], 0);
+  assert_eq!(foxmulator.state.r[8], -2_i16 as u16);
+  assert_eq!(foxmulator.state.r[9], 0);
+
+}
+
+#[test]
 fn test_sub() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 

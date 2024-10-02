@@ -335,4 +335,8 @@ set {rd: register}, {val: i16} => {
     0b1100_0000 @ rd`4 @ imm`8 @ 0b0111_1111_1101
   }
 
+; | CORE | 0100 iiii dddd aaaa | add rd, ra, rb
+  add {rd: register}, {rb: register}, {ra: register} =>
+    0b0100 @ rb`4 @ rd`4 @ ra`4
+
 }

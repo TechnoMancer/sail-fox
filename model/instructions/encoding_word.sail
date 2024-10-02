@@ -86,6 +86,9 @@ mapping clause code_single_word = 0b0010 @ 0b0101 @ rd :register_index @ imm <->
 //| CORE | 0011 1111 bbnn nnnn | block (b = branch count, n = instruction word count - 1)
 mapping clause code_single_word = 0b0011 @ 0b1111 @ b : block_branch_count @ n : block_length  <-> (BLOCK(b, n, None()), Some(Always()))
 
+//| CORE | 0100 iiii dddd aaaa | add rd, ra, rb
+mapping clause code_single_word = forwards 0b0100 @ rb : register_index @ rd : register_index @ ra : register_index => (ADD(rd, rb, ra), Some(Always()))
+
 //| CORE | 1000 iiii dddd aaaa | load rd, ra[imm] (relative to c0)
 mapping clause code_single_word = 0b1000 @ imm @ rd : register_index @ ra : register_index <-> (LOAD_W(rd, ra, imm), Some(Always()))
 //| CORE | 1001 iiii dddd aaaa | store rd, ra[imm] (relative to c0)
@@ -115,6 +118,8 @@ mapping clause code_single_word = backwards (XOR(rd, ra, rb), Some(Always())) if
 //| CORE | 0001 0011 dddd aaaa | andc rd, ra
 mapping clause code_single_word = backwards (ANDC(rd, ra, rb), Some(Always())) if ra == rd => 0b0001 @ 0b0011 @ rd @ rb
 
+//| CORE | 0100 iiii dddd aaaa | add rd, ra, rb
+mapping clause code_single_word = backwards (ADD(rd, rb, ra), Some(Always())) if rd != rb =>  0b0100 @ rb : register_index @ rd : register_index @ ra : register_index
 
 mapping clause code_single_word = unallocated : bits(16) <-> (UNALLOCATED(unallocated), Some(Always()))
 
