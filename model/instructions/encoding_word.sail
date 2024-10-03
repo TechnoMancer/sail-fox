@@ -30,6 +30,11 @@ mapping clause code_single_word = forwards 0b0000 @ 0b0100 @ rd : register_index
 //| CMOV | 0000 0101 dddd aaaa | mov rd, ra unless p0 (rd = ra is reserved)
 mapping clause code_single_word = forwards 0b0000 @ 0b0101 @ rd : register_index @ ra : register_index if ra != rd => (MOV(rd, ra), Some(InversePredicate(0b000)))
 
+//| CORE | 0000 0110 0aaa dddd | read rd, ta
+mapping clause code_single_word = 0b0000 @ 0b0110 @ 0b0 @ ta : target_index @ rd : register_index <-> (READT(rd, ta), Some(Always()))
+//| CORE | 0000 0110 1ddd aaaa | target td, ra
+mapping clause code_single_word = 0b0000 @ 0b0110 @ 0b1 @ td : target_index @ ra : register_index <-> (WRITET(td, ra), Some(Always()))
+
 //| CORE | 0000 0111 0ddd aaaa | b td if ra == 0
 mapping clause code_single_word = 0b0000 @ 0b0111 @ 0b0 @ td : target_index @ ra : register_index <-> (BRANCH_Z(td, ra, false), Some(Always()))
 //| CORE | 0000 0111 1ddd aaaa | b td if ra != 0

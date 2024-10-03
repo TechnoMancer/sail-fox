@@ -82,7 +82,7 @@ Note: Is a 3-operand add/sub here worth it? It costs one eight of the entire enc
 | CORE | 0000 0011 dddd aaaa | byteswap rd, ra
 | CMOV | 0000 0100 dddd aaaa | mov rd, ra if p0 (rd = ra is reserved)
 | CMOV | 0000 0101 dddd aaaa | mov rd, ra unless p0 (rd = ra is reserved)
-| CORE | 0000 0110 0ddd aaaa | read rd, ta
+| CORE | 0000 0110 0aaa dddd | read rd, ta
 | CORE | 0000 0110 1ddd aaaa | target td, ra
 | CORE | 0000 0111 0ddd aaaa | b td if ra == 0
 | CORE | 0000 0111 1ddd aaaa | b td if ra != 0

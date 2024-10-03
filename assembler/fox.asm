@@ -230,6 +230,13 @@ set {rd: register}, {val: i16} => {
     0b0000_0101 @ rd @ ra
   }
 
+; | CORE | 0000 0110 0aaa dddd | read rd, ta
+  read {rd: register}, {ta: target} =>
+    0b0000_0110 @ 0b0 @ ta`3 @ rd`4
+; | CORE | 0000 0110 1ddd aaaa | target td, ra
+  target {td: target}, {ra: register} =>
+    0b0000_0110 @ 0b1 @ td`3 @ ra`4
+
 ; | 0000 0111 0ddd aaaa | b td if ra == 0
   b {td: target}, if {ra:register} eq 0 => 0b0000_0111_0 @ td`3 @ ra
 ; | 0000 0111 1ddd aaaa | b td if ra != 0

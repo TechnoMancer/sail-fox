@@ -472,6 +472,28 @@ fn test_cmov() {
 }
 
 #[test]
+fn test_read_write_targ() {
+  let mut foxmulator = Foxmulator::singleton().unwrap();
+
+  foxmulator.state.t[0] = 0xcafe;
+  foxmulator.state.r[0] = 0xbeef;
+
+  foxmulator.run_assembly(r#"
+    block (end)
+    read r1, t0
+    target t1, r0
+    halt
+    end:
+  "#);
+
+  assert_eq!(foxmulator.state.halt_reason, HaltReason::Halt);
+  assert_eq!(foxmulator.state.t[0], 0xcafe);
+  assert_eq!(foxmulator.state.t[1], 0xbeef);
+  assert_eq!(foxmulator.state.r[0], 0xbeef);
+  assert_eq!(foxmulator.state.r[1], 0xcafe);
+}
+
+#[test]
 fn test_call() {
   let mut foxmulator = Foxmulator::singleton().unwrap();
 

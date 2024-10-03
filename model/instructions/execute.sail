@@ -26,6 +26,18 @@ function clause execute MOVT(td, ta) = {
   RETIRE_SUCCESS
 }
 
+function clause execute READT(rd, ta) = {
+  R(rd) = T(ta);
+
+  RETIRE_SUCCESS
+}
+
+function clause execute WRITET(td, ra) = {
+  T(td) = R(ra);
+
+  RETIRE_SUCCESS
+}
+
 function clause execute ADD(rd, ra, rb) = {
   R(rd) = R(ra) + R(rb);
 
