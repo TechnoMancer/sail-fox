@@ -1,3 +1,5 @@
+use std::io::{Read, Write};
+
 use crate::assembler;
 
 const PAGE_SHIFT: usize = 14;
@@ -55,7 +57,24 @@ impl Memory {
   }
 
   pub fn read_u8(&self, address: usize) -> Result<u8, ()> {
-    return self.map.read_u8(address);
+    match address {
+      // console status: 
+      // first byte is number of chars in tx queue
+      // second byte is available chars in rx queue
+      0xfffa => {Ok(0)},
+      0xfffb => {Ok(0b1)},
+      // console tx register, reads as 0
+      0xfffc => {Ok(0)},
+      0xfffd => {Ok(0)},
+      // console rx register, reads as single byte read from stdin
+      0xfffe => {Ok(0)},
+      0xffff => {
+        let mut buf = [0u8; 1];
+        std::io::stdin().take(1).read_exact(&mut buf).map_err(|_| ())?;
+        Ok(buf[0])
+      },
+      _ => self.map.read_u8(address)
+    }
   }
   
   pub fn read_u16(&self, address: usize) -> Result<u16, ()> {
@@ -63,11 +82,36 @@ impl Memory {
       return Err(());
     }
 
-    return self.map.read_u16(address);
+    return match address {
+      // See read_u8
+      0xfffa => {Ok(0b1)},
+      0xfffc => {Ok(0)},
+      0xfffe => {
+        let mut buf = [0u8; 1];
+        std::io::stdin().take(1).read_exact(&mut buf).map_err(|_| ())?;
+        Ok(buf[0] as u16)
+      },
+      _ => self.map.read_u16(address)
+    }
   }
 
   pub fn write_u8(&self, address: usize, data: u8) -> Result<(), ()> {
-    return self.map.write_u8(address, data);
+    return match address {
+      // Console status register, ignores writes
+      0xfffa => {Ok(())},
+      0xfffb => {Ok(())},
+      // Console tx register, writes byte in lower half to console
+      0xfffc => {Ok(())},
+      0xfffd => {
+        let buf = [data];
+        std::io::stdout().write_all(&buf).map_err(|_| ())?;
+        Ok(())
+      },
+      // Console rx register, ignores reads
+      0xfffe => {Ok(())},
+      0xffff => {Ok(())},
+      _ => self.map.write_u8(address, data)
+    }
   }
   
   pub fn write_u16(&self, address: usize, data: u16) -> Result<(), ()> {
@@ -75,7 +119,18 @@ impl Memory {
       return Err(());
     }
 
-    return self.map.write_u16(address, data);
+    return match address {
+      // See write_u8
+      0xfffa => {Ok(())},
+      0xfffc => {
+        let buf = [(data & 0xff) as u8];
+        //println!("Printing: {:?}", &buf);
+        std::io::stdout().write_all(&buf).map_err(|_| ())?;
+        Ok(())
+      },
+      0xfffe => {Ok(())},
+      _ => self.map.write_u16(address, data)
+    }
   }
 }
 
