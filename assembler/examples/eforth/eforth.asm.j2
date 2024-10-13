@@ -1,0 +1,120 @@
+; This is an attempt to port a version of eForth to the Fox ISA
+; The eforth referenced for porting is at https://www.forth.org/eforth.html
+; The primary reference is: https://www.forth.org/library/eforth_SOC/eforth_SOC_source/eForth2/EFORTH86.ZIP
+; This is ported from 86ef202.asm primarily, but has some changes to fit arch better
+
+;Include FoxISA assembler definition
+#include "fox.asm"
+
+; Register use:
+; r15 is the forth inner interpreter instruction pointer
+; r14 is the return stack pointer
+; r13 is the data stack pointer (may be replaced with hardware stack when implemented)
+; r0 - r4 are used as temporaries for various machine specific operations
+; r12 is used to load the next word address into during next operation
+; t4 is used as the jump target during the next operation but doesn't need to be preserved
+
+{# Set up variables used in linking dictionary -#}
+{%- set ns = namespace(link = 0) %}
+
+{# Macro for next operation, can emit a block or not -#}
+{% macro next(block=False) -%}
+    {% if block -%}
+    .next:
+    block (1, ..end)
+    {% endif %}
+    ld.w r12, r15[0]
+    inc r15, 2
+    target t4, r12
+    b t4
+    {%- if block -%}
+    ..end:
+    {% endif %}
+{%- endmacro -%}
+
+{# Macro for doList operation -#}
+{% macro doList() -%}
+    .enter:
+    block (1, ..end)
+    ; Push current IP to return stack
+    inc r14, 2
+    st.w r15, r14[0]
+    ; Read next pointer for block and put in IP
+    read r15, next
+    ; next
+    {{- next(False) }}
+    ..end:
+{%- endmacro -%}
+
+{# Macro for word header -#}
+{% macro word(name, flags, lable) -%}
+    #d16 {{ ns.link }}
+    {{lable}}_name:
+    {%- set ns.link = lable + "_name" %}
+    #d8 {{ flags }}, {{ name|length() }}
+    #d "{{name}}"
+    #align 16
+    {{lable}}:
+{%- endmacro -%}
+
+{# Macro for colon word -#}
+{% macro colon(name, flags, lable) -%}
+    {{ word(name, flags, lable) }}
+    {{ doList() }}
+{%- endmacro -%}
+
+; Memory layout:
+; 
+;
+
+; Constants
+TRUEE = -1
+
+compile_only = 0x100    ; Compile only flag
+immediate = 0x200       ; Immediate flag
+lexicon_mask = 0xff00    ; Mask of lexicon bits
+
+CELLL = 2
+
+stack_tib_size = 128*CELLL ; Size of stacks and TIB
+
+end_mem = 0xfff0
+tib_base = end_mem - stack_tib_size ; Terminal Input Buffer base
+user_base = tib_base - stack_tib_size ; User area base pointer
+rp_base = user_base - stack_tib_size ; Return stack base pointer
+sp_base = rp_base - stack_tib_size ; Data stack base ponter
+
+
+
+; Startup setup code
+cold_start:
+    block (1, .end)
+    set r13, sp_base ; Init Data Stack pointer
+    set r14, rp_base ; Init Return Stack pointer
+    set r15, cold_list ; Set IP to cold start words
+    {{ next() }}
+    .end:
+    stall:
+    block (1, .end)
+    b current
+    .end:
+    cold_list:
+    #d16 cold, stall
+
+{{ word("halt", 0x00, "halt") }}
+block (.end)
+halt
+.end:
+
+{{ colon("cold", 0x00, "cold") }}
+#d16 halt
+
+#addr sp_base
+sp:
+#addr rp_base
+rp:
+#addr user_base
+user:
+#d16 0
+#addr tib_base
+tib:
