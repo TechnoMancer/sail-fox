@@ -33,8 +33,18 @@ impl Memory {
     if address & L0_MASK != 0 {
       return Err(());
     }
+    let mut addr = address;
 
-    return self.map_page(address, MemoryPage::from_file(path)?);
+    if let Ok(data) = std::fs::read(path) {
+      for chunk in data.chunks(PAGE_SIZE) {
+        self.map_page(addr, MemoryPage::from_data(chunk)?)?;
+        addr += chunk.len();
+      }
+      Ok(())
+    }
+    else {
+       Err(())
+    }
   }
 
   pub fn allocate_page_from_assembly(&mut self, address: usize, asm: &str) -> Result<(), ()> {
