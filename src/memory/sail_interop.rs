@@ -15,7 +15,8 @@ pub unsafe extern "C" fn read_u8_be(address: sail::fbits) -> sail::fbits {
 #[no_mangle]
 pub unsafe extern "C" fn read_u16_be(address: sail::fbits) -> sail::fbits {
   if let Ok(value) = MEMORY.read_u16(address as usize) {
-    return value.to_be() as sail::fbits;
+    let value = u16::from_be(value);
+    return value as sail::fbits;
   } else {
     panic!("We probably shouldn't panic on out of bounds reads should we?");
   }
