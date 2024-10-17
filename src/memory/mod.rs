@@ -133,7 +133,7 @@ impl Memory {
       // See write_u8
       0xfffa => {Ok(())},
       0xfffc => {
-        let buf = [(data & 0xff) as u8];
+        let buf = [(u16::from_be(data) & 0xff) as u8];
         //println!("Printing: {:?}", &buf);
         std::io::stdout().write_all(&buf).map_err(|_| ())?;
         Ok(())

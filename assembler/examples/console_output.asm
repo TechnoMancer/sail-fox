@@ -12,6 +12,7 @@ test:
     loop:
     block (1, .end)
     ld.w r2, r1[0]
+    byteswap r2, r2
     st.w r2, r0[0]
     byteswap r2, r2
     st.w r2, r0[0]
