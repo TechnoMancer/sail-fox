@@ -48,12 +48,14 @@ There are 8 predicate registers named `p0` - `p7`. The negations named `!p0` to 
 
 ### Target Registers ###
 
-There are 8 branch target registers named `t0` to `t7` that are used to both compress the encoding for branches, but also to allow the branch predictor to have an easier time. All the target registers are considered temporary, none are callee saved.
+There are 16 branch target registers named `t0` to `t15` that are used to both compress the encoding for branches, but also to allow the branch predictor to have an easier time. All the target registers are considered temporary, none are callee saved.
 
- - `t0` to `t4` are temporaries
- - `t5` is used as the link register, also named `link`
- - `t6` is the next sequential block after the current one, also named `next`
- - `t7` is the current block, also named `current`
+ - `t0` to `t3` are used for function arguments / return values
+ - `t4` to `t9` are temporary
+ - `t10` to `t12` are callee saved
+ - `t13` is used as the link register, also named `link`
+ - `t14` is the next sequential block after the current one, also named `next`
+ - `t15` is the current block, also named `current`
 
 
 ### CSRs ###
@@ -62,6 +64,7 @@ The following CSRs are defined, the there are in theory 256 of them but all of t
 
  - `csr[0]` or `status` is a status register. At reset its value is undefined.
  - `csr[1]` or `sp` is the stack pointer. At reset its value is undefined. The stack grows upward.
+ - `csr[2]` contains a copy of the predicate registers in the lower 8 bits, the upper 8 bits are reserved for now and should be preserved.
 
 
 ### CSCs ###
@@ -82,15 +85,12 @@ Note: Is a 3-operand add/sub here worth it? It costs one eight of the entire enc
 | CORE | 0000 0011 dddd aaaa | byteswap rd, ra
 | CMOV | 0000 0100 dddd aaaa | mov rd, ra if p0 (rd = ra is reserved)
 | CMOV | 0000 0101 dddd aaaa | mov rd, ra unless p0 (rd = ra is reserved)
-| CORE | 0000 0110 0aaa dddd | read rd, ta
-| CORE | 0000 0110 1ddd aaaa | target td, ra
-| CORE | 0000 0111 0ddd aaaa | b td if ra == 0
-| CORE | 0000 0111 1ddd aaaa | b td if ra != 0
+| CORE | 0000 0110 dddd aaaa | mov rd, ta (previously called read)
+| CORE | 0000 0111 dddd aaaa | mov td, ra (previously called target)
 | CORE | 0000 1000 dddd aaaa | eq p0, rd, ra
 | CORE | 0000 1001 dddd aaaa | gt.s p0, rd, ra
 | CORE | 0000 1010 dddd aaaa | gt.u p0, rd, ra
-| CORE | 0000 1011 0ddd pppp | b td (predicated)
-| CALL | 0000 1011 1ddd pppp | call td (predicated)
+| CORE | 0000 1011 dddd pppp | mov pd, ra (pd is set to ra != 0)
 | CORE | 0000 1100 dddd aaaa | inc rd, ra
 | CORE | 0000 1101 dddd aaaa | dec rd, ra
 | CORE | 0000 1110 dddd aaaa | inc.c rd, ra, p1 (carry in/out in p1)
@@ -100,12 +100,12 @@ Note: Is a 3-operand add/sub here worth it? It costs one eight of the entire enc
 | CORE | 0001 0010 dddd aaaa | xor rd, ra
 | CORE | 0001 0011 dddd aaaa | andc rd, ra
 | CORE | 0001 0100 0ddd aaaa | mov pd, pa
-| CORE | 0001 0100 1ddd aaaa | mov td, ta
-|      | 0001 0101 xxxx xxxx | reserved
-|      | 0001 0110 xxxx xxxx | reserved
-|      | 0001 0111 xxxx xxxx | reserved
-|      | 0001 1000 xxxx xxxx | reserved
-|      | 0001 1001 xxxx xxxx | reserved
+| CORE | 0001 0100 1ddd aaaa | reserved
+| CORE | 0001 0101 dddd aaaa | mov td, ta
+| CORE | 0001 0110 dddd aaaa | b td if ra == 0
+| CORE | 0001 0111 dddd aaaa | b td if ra != 0
+| CORE | 0001 1000 dddd pppp | b rd (predicated)
+| CORE | 0001 1001 dddd pppp | call td (predicated)
 |      | 0001 1010 xxxx xxxx | reserved
 |      | 0001 1011 xxxx xxxx | reserved
 |      | 0001 1100 xxxx xxxx | reserved
@@ -243,8 +243,7 @@ Note: We can probably make a CPU that is useful without supporting any of these 
 |      | 1100 1011 xxxx xxxx xxxx xxxx xxxx xxxx | reserved
 |      | 1100 1100 xxxx xxxx xxxx xxxx xxxx xxxx | reserved
 | CORE | 1100 1101 bbnn nnnn iiii iiii iiii iiii | block (b = branch count, n = instruction word count - 1), t0 = block + simm << 1
-| CORE | 1100 1110 0ddd iiii iiii iiii iiii iiii | target td, block + simm << 1
-|      | 1100 1110 1ddd iiii iiii iiii iiii iiii | reserved
+| CORE | 1100 1110 dddd iiii iiii iiii iiii iiii | target td, block + simm << 1
 |      | 1100 1111 dddd 0000 iiii iiii iiii iiii | reserved
 | CORE | 1100 1111 dddd 0001 iiii iiii iiii iiii | set rd, simm
 |      | 1100 1111 dddd 0010 iiii iiii iiii iiii | reserved
